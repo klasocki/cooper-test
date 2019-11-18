@@ -12,37 +12,48 @@
         android:id="@+id/button_start"
         android:layout_width="180dp"
         android:layout_height="70dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="144dp"
         android:fontFamily="sans-serif"
         android:onClick="startTest"
-        android:text="Start"
+        android:text="@string/start"
         android:textAlignment="center"
         android:textSize="36sp"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="120dp" />
+        app:layout_constraintBottom_toTopOf="@+id/button_start2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.535" />
 
     <Button
         android:id="@+id/button_start2"
         android:layout_width="180dp"
         android:layout_height="70dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="66dp"
         android:fontFamily="sans-serif"
-        android:text="Results"
+        android:text="@string/results"
         android:textAlignment="center"
         android:textSize="36sp"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="246dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start" />
 
     <Button
         android:id="@+id/button_profile"
         android:layout_width="180dp"
         android:layout_height="70dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="77dp"
         android:fontFamily="sans-serif"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textAlignment="center"
         android:textSize="36sp"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="382dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
