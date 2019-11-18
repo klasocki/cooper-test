@@ -1,5 +1,6 @@
 package com.example.coopertest
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -9,6 +10,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.View
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -31,4 +38,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(joensuu).title("Marker in Joensuu"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(joensuu))
     }
+
+
+
 }
