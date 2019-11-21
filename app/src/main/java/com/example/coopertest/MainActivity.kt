@@ -22,10 +22,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startTest(v: View) {
-        val intent = Intent(this, MapsActivity::class.java)
+        val intent = Intent(this, TestActivity::class.java)
         startActivity(intent)
-
-
     }
 
 }

@@ -4,13 +4,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TestActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:textSize="36sp"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="62dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".ResultActivity"/>
