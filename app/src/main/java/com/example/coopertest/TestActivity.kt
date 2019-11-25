@@ -14,7 +14,8 @@ class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        object : CountDownTimer((20 * 1000).toLong(), 100) {
+        val testLengthMinutes = 1
+        object : CountDownTimer((testLengthMinutes * 60 * 1000).toLong(), 100) {
 
             override fun onTick(millisUntilFinished: Long) {
                 textView.text = SimpleDateFormat("mm:ss.S").format(
