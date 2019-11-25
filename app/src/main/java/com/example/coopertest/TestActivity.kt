@@ -18,13 +18,13 @@ class TestActivity : AppCompatActivity() {
         object : CountDownTimer((testLengthMinutes * 60 * 1000).toLong(), 100) {
 
             override fun onTick(millisUntilFinished: Long) {
-                textView.text = SimpleDateFormat("mm:ss.S").format(
+                timerView.text = SimpleDateFormat("mm:ss.S").format(
                     Date(millisUntilFinished)
                 )
             }
 
             override fun onFinish() {
-                textView.text = "Done!"
+                timerView.text = "Done!"
                 backToMain()
             }
         }.start()
