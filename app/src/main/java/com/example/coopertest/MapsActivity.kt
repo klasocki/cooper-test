@@ -15,12 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Looper
-import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -34,19 +29,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private lateinit var mMap: GoogleMap
-    private var lastLocation : Location? =null
-    private var isMapReady : Boolean = false
-    private var firstLunch : Boolean = true
-    private var fisrtLocation : Location? = null
-
-    val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var lastLocation: Location? = null
+    private var firstLocation: Location? = null
+    private var isMapReady: Boolean = false
+    private var firstLaunch: Boolean = true
+
+    private val PERMISSION_ID = 42
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         //Initialisation of mFusedLocationClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -59,7 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         //Put the flag at one
-        isMapReady=true
+        isMapReady = true
     }
 
     //Get the last location from the GPS sensor or network location
@@ -68,10 +64,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    var location: Location? = task.result
-                    if (location == null || firstLunch) {
+                    val location: Location? = task.result
+                    if (location == null || firstLaunch) {
                         requestNewLocationData()
-                        firstLunch=false
+                        firstLaunch = false
                     }
                 }
             } else {
@@ -87,7 +83,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Create a background request to update location
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
-        var mLocationRequest = LocationRequest()
+        val mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         //When we took location : max and min
         mLocationRequest.interval = 10000
@@ -104,33 +100,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //At each new location received, we add a line on the map
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-
-            if (isMapReady && lastLocation!=null){
-                if (fisrtLocation==null){
-                    fisrtLocation=lastLocation
-                    mMap.addMarker(MarkerOptions().position(LatLng(fisrtLocation!!.latitude, fisrtLocation!!.longitude)).title("StartPoint"))
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(fisrtLocation!!.latitude, fisrtLocation!!.longitude), 16.0f))
+            if (isMapReady && lastLocation != null) {
+                if (firstLocation == null) {
+                    firstLocation = lastLocation
+                    mMap.addMarker(
+                        MarkerOptions().position(
+                            LatLng(
+                                firstLocation!!.latitude,
+                                firstLocation!!.longitude
+                            )
+                        ).title("StartPoint")
+                    )
+                    mMap.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                firstLocation!!.latitude,
+                                firstLocation!!.longitude
+                            ), 16.0f
+                        )
+                    )
                 }
-                var currentlocation = locationResult.lastLocation
+                val currentLocation = locationResult.lastLocation
                 val options = PolylineOptions()
                 options.color(Color.RED)
                 options.width(5f)
 
-                if (currentlocation != null) {
+                if (currentLocation != null) {
                     options.add(LatLng(lastLocation!!.latitude, lastLocation!!.longitude))
-                    options.add(LatLng(currentlocation.latitude, currentlocation.longitude))
+                    options.add(LatLng(currentLocation.latitude, currentLocation.longitude))
                     mMap.addPolyline(options)
                     //Use only for debuging, remove after
                     //mMap.addMarker(MarkerOptions().position(LatLng(currentlocation.latitude, currentlocation.longitude)).title("DEBUG"))
                 }
             }
-            lastLocation=locationResult.lastLocation
+            lastLocation = locationResult.lastLocation
         }
     }
 
     //Verify if the location sensor is enabled on phone
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
@@ -138,35 +148,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Check if the position permissions is enabled
     private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
+        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED)
+
     }
 
     //Request the location permission
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_ID
         )
     }
 
     //Execute this if the permission is granted
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == PERMISSION_ID) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getLastLocation()
-            }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSION_ID && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation()
         }
     }
 }
