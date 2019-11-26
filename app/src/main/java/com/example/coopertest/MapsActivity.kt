@@ -14,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import android.os.Looper
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -30,8 +29,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private var lastLocation: Location? = null
-    private var firstLocation: Location? = null
+    private var routePoints: List<Location> = emptyList()
     private var isMapReady: Boolean = false
     private var firstLaunch: Boolean = true
 
@@ -61,22 +59,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Get the last location from the GPS sensor or network location
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    val location: Location? = task.result
-                    if (location == null || firstLaunch) {
-                        requestNewLocationData()
-                        firstLaunch = false
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
-        } else {
+        if (!checkPermissions()) {
             requestPermissions()
+            return
+        }
+
+        if (!isLocationEnabled()) {
+            Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+            return
+        }
+
+        mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+            val location: Location? = task.result
+            if (location == null || firstLaunch) {
+                requestNewLocationData()
+                firstLaunch = false
+            }
         }
     }
 
@@ -100,40 +100,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //At each new location received, we add a line on the map
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            if (isMapReady && lastLocation != null) {
-                if (firstLocation == null) {
-                    firstLocation = lastLocation
-                    mMap.addMarker(
-                        MarkerOptions().position(
-                            LatLng(
-                                firstLocation!!.latitude,
-                                firstLocation!!.longitude
-                            )
-                        ).title("StartPoint")
-                    )
-                    mMap.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                firstLocation!!.latitude,
-                                firstLocation!!.longitude
-                            ), 16.0f
-                        )
-                    )
-                }
-                val currentLocation = locationResult.lastLocation
+            if (!isMapReady || locationResult.lastLocation == null) return
+            val currentLocation = locationResult.lastLocation
+            mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        currentLocation.latitude,
+                        currentLocation.longitude
+                    ), 15.0f
+                )
+            )
+            if (routePoints.count() > 0) {
                 val options = PolylineOptions()
                 options.color(Color.RED)
                 options.width(5f)
 
-                if (currentLocation != null) {
-                    options.add(LatLng(lastLocation!!.latitude, lastLocation!!.longitude))
-                    options.add(LatLng(currentLocation.latitude, currentLocation.longitude))
-                    mMap.addPolyline(options)
-                    //Use only for debuging, remove after
-                    //mMap.addMarker(MarkerOptions().position(LatLng(currentlocation.latitude, currentlocation.longitude)).title("DEBUG"))
-                }
+                options.add(LatLng(routePoints.last().latitude, routePoints.last().longitude))
+                options.add(LatLng(currentLocation.latitude, currentLocation.longitude))
+                mMap.addPolyline(options)
             }
-            lastLocation = locationResult.lastLocation
+            routePoints = routePoints + currentLocation
         }
     }
 
@@ -148,11 +134,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Check if the position permissions is enabled
     private fun checkPermissions(): Boolean {
-        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED)
-
+        return (ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED)
     }
 
     //Request the location permission
