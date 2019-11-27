@@ -33,11 +33,12 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var timer: CountDownTimer
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var routePoints: List<Location> = emptyList()
+    private var currentDistanceMeters = 0.0
     private var isMapReady: Boolean = false
     private var firstLaunch: Boolean = true
 
     private val PERMISSION_ID = 42
-    private val testLengthMinutes = 1
+    private val testLengthMinutes = .1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +60,14 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onFinish() {
-                timerView.text = "Done!"
-                backToMain()
+                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+                timerView.text = "Result:"
             }
         }
+    }
+
+    fun currentDistanceString(): String{
+        return "%.0fm".format(currentDistanceMeters)
     }
 
     fun backToMain() {
@@ -77,6 +82,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         isMapReady = true
         getLastLocation()
         timer.start()
+        currentDistanceTextView.text = currentDistanceString()
     }
 
     //Get the last location from the GPS sensor or network location
@@ -109,8 +115,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         val mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         //When we took location : max and min
-        mLocationRequest.interval = 10000
-        mLocationRequest.fastestInterval = 5000
+        mLocationRequest.interval = 2500
+        mLocationRequest.fastestInterval = 1500
         //mLocationRequest.numUpdates = 1
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -124,16 +130,16 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             if (!isMapReady || locationResult.lastLocation == null) return
+
+
             val currentLocation = locationResult.lastLocation
             mMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(
-                        currentLocation.latitude,
-                        currentLocation.longitude
-                    ), 15.0f
-                )
+                CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 15.0f)
             )
             if (routePoints.count() > 0) {
+                currentDistanceMeters += currentLocation.distanceTo(routePoints.last())
+                currentDistanceTextView.text = currentDistanceString()
+
                 val options = PolylineOptions()
                 options.color(Color.RED)
                 options.width(5f)
