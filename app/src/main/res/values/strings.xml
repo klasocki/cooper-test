@@ -5,4 +5,7 @@
     <string name="start">Start</string>
     <string name="results">Results</string>
     <string name="profile">Profile</string>
+    <string name="curr_speed_label">Current</string>
+    <string name="avg_speed_label">Average</string>
+    <string name="initial_speed">0.0 m/s</string>
 </resources>

@@ -38,7 +38,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private var firstLaunch: Boolean = true
 
     private val PERMISSION_ID = 42
-    private val testLengthMinutes = .1
+    private val testLengthMinutes = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +68,14 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun currentDistanceString(): String{
         return "%.0fm".format(currentDistanceMeters)
+    }
+
+    fun formatSpeed(speed: Float): String{
+        return "%.1f m/s".format(speed)
+    }
+
+    fun calculateSpeed(start: Location, end: Location): Float{
+        return (end.distanceTo(start) * 1000 / (end.time - start.time)).toFloat()
     }
 
     fun backToMain() {
@@ -136,9 +144,19 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 15.0f)
             )
+
+            currentSpeedView.text = when {
+                currentLocation.hasSpeed() -> formatSpeed(currentLocation.speed)
+                routePoints.count() > 0 -> formatSpeed(calculateSpeed(routePoints.last(), currentLocation))
+                else -> formatSpeed(0.toFloat())
+            }
+
             if (routePoints.count() > 0) {
                 currentDistanceMeters += currentLocation.distanceTo(routePoints.last())
                 currentDistanceTextView.text = currentDistanceString()
+
+                val avgSpeedSoFar = currentDistanceMeters * 1000 / (currentLocation.time - routePoints.first().time)
+                avgSpeedView.text = formatSpeed(avgSpeedSoFar.toFloat())
 
                 val options = PolylineOptions()
                 options.color(Color.RED)
