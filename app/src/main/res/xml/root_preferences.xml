@@ -31,14 +31,11 @@
             app:title="Your name"
             app:useSimpleSummaryProvider="true" />
 
-
-
-
         <com.example.coopertest.DatePreference
             app:key="birthday"
             app:title="Birthday"
-            app:defaultValue="2014-08-01"
-            app:summary="Summary"/>
+            app:defaultValue="2000-01-01"
+            app:summary="%s"/>
 
         <SwitchPreferenceCompat
             app:key="athlete"

@@ -39,6 +39,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private val PERMISSION_ID = 42
     private val testLengthMinutes = 1
 
+    private val objectContext : App = App(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        resultTextView.text=""
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -155,6 +158,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onFinish() {
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback)
                 timerView.text = "Result:"
+                val objectResult= Results(currentDistanceMeters, objectContext.getContext() )
+                val yourLevel= objectResult.getLevel()
+                resultTextView.text=yourLevel
             }
         }
     }

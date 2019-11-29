@@ -96,6 +96,18 @@
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <TextView
+        android:id="@+id/resultTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:fontFamily="@font/aldrich"
+        android:text="No result"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
+
+    <TextView
         android:id="@+id/labelAvgSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
