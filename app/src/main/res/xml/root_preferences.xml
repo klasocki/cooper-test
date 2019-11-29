@@ -18,11 +18,13 @@
 
     <PreferenceCategory app:title="Personal information">
 
-        <CheckBoxPreference
-            app:key="gender"
+        <ListPreference
             app:title="Gender"
+            app:summary="%s"
+            app:key="gender"
 
-            />
+            app:entries="@array/gender"
+            app:entryValues="@array/gender" />
 
         <EditTextPreference
             app:key="name"
@@ -32,10 +34,15 @@
 
 
 
-        <Preference
-            app:title="Birthday"
+        <com.example.coopertest.DatePreference
             app:key="birthday"
-            app:summary="Print birthday"/>
+            app:title="Birthday"
+            app:defaultValue="2014-08-01"
+            app:summary="Summary"/>
+
+        <SwitchPreferenceCompat
+            app:key="athlete"
+            app:title="Are you an athlete ?" />
 
     </PreferenceCategory>
 
