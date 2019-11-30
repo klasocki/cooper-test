@@ -107,15 +107,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestPermissionsAndLocationUpdates() {
-        if (!checkPermissions()) {
+        if (!checkPermissions() || !isLocationEnabled()) {
             requestPermissions()
-            return
-        }
-
-        if (!isLocationEnabled()) {
-            Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
             return
         }
 
@@ -199,23 +192,14 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            PERMISSION_ID
-        )
+        val intent = Intent(this, LocationActivity::class.java)
+        startActivity(intent)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSION_ID && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            requestPermissionsAndLocationUpdates()
-        }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }

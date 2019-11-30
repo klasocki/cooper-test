@@ -8,4 +8,7 @@
     <string name="curr_speed_label">Current</string>
     <string name="avg_speed_label">Average</string>
     <string name="initial_speed">0.0 m/s</string>
+    <string name="TitleLocation">Activate location</string>
+    <string name="TextLocation">You have to activate the location to perform a test</string>
+    <string name="ActivateLocation">Activate location</string>
 </resources>
