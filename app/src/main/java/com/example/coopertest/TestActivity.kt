@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,6 +32,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var isMapReady: Boolean = false
     private var firstLaunch: Boolean = true
+    private var miles : Boolean = false
 
     private lateinit var timer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
@@ -170,7 +172,13 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun formatSpeed(speed: Float): String {
-        return "%.1f m/s".format(speed)
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        miles = mSharedPreference.getBoolean("miles", false)
+        if (!miles){
+            return "%.1f km/h".format(speed*3.6)
+        } else {
+            return "%.1f mph".format(speed*2.23694)
+        }
     }
 
     private fun calculateSpeed(start: Location, end: Location): Float {

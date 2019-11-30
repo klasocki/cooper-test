@@ -12,6 +12,12 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 /**
  * Displays different preferences.
  */
@@ -27,6 +33,17 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
         if (preference instanceof DatePreference) {
+            preference.setDefaultValue(defaultDate());
+            setPreferenceSummary(preference);
+            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference,Object newValue) {
+                    //your code to change values.
+                    setPreferenceSummary(preference);
+                    return true;
+                }
+            });
+
             final DialogFragment f;
             f = DatePreferenceDialogFragment.newInstance(preference.getKey());
             f.setTargetFragment(this, 0);
@@ -34,7 +51,10 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         } else {
             super.onDisplayPreferenceDialog(preference);
         }
+
     }
+
+
 
     /**
      * Walks through all preferences.
@@ -65,5 +85,15 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         } else if (p instanceof EditTextPreference) {
             p.setSummaryProvider(EditTextPreference.SimpleSummaryProvider.getInstance());
         }
+    }
+
+    //Create a date 18 years ago
+    public String defaultDate() {
+        GregorianCalendar calStr1 = new GregorianCalendar();
+        calStr1.setTime(new Date());
+        calStr1.add(GregorianCalendar.YEAR, -18);
+        String formatDate = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(formatDate);
+        return sdf.format(calStr1.getTime());
     }
 }

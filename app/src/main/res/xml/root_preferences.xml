@@ -33,9 +33,7 @@
 
         <com.example.coopertest.DatePreference
             app:key="birthday"
-            app:title="Birthday"
-            app:defaultValue="2000-01-01"
-            app:summary="%s"/>
+            app:title="Birthday" />
 
         <SwitchPreferenceCompat
             app:key="athlete"
