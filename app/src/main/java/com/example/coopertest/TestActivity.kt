@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
@@ -53,7 +54,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
         mMap = googleMap
+        mMap.setMapStyle(style)
         //Put the flag at one
         isMapReady = true
         requestPermissionsAndLocationUpdates()
