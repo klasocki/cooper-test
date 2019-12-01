@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
@@ -32,12 +33,17 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var isMapReady: Boolean = false
     private var firstLaunch: Boolean = true
+    private var testStarted: Boolean = false
 
-    private lateinit var timer: CountDownTimer
+    private lateinit var testTimer: CountDownTimer
+    private lateinit var startTimer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
 
     private val testLengthMinutes = 1
+    private val maxDistanceChangeBetweenLocations = 50
+
+    private lateinit var mediaPlayer: MediaPlayer
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +56,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        timer = getTimer()
+        testTimer = getTestTimer()
+        startTimer = getStartTimer()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -60,8 +67,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         //Put the flag at one
         isMapReady = true
         requestPermissionsAndLocationUpdates()
-        timer.start()
-        currentDistanceTextView.text = currentDistanceString()
+        startTimer.start()
+        mediaPlayer = MediaPlayer.create(this, R.raw.ten_sec_beeps)
+        mediaPlayer.start()
     }
 
     private val mLocationCallback = object : LocationCallback() {
@@ -74,6 +82,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun processNewLocation(newLocation: Location) {
+        if (!testStarted) { return }
+
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(newLocation.latitude, newLocation.longitude), 15.0f
@@ -93,7 +103,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun updateMapAndSpeed(newLocation: Location) {
-        currentDistanceMeters += newLocation.distanceTo(routePoints.last())
+        val distanceChange = newLocation.distanceTo(routePoints.last())
+//        if (distanceChange > )
+        currentDistanceMeters += distanceChange
         currentDistanceTextView.text = currentDistanceString()
 
         val avgSpeedSoFar =
@@ -138,21 +150,40 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
-    private fun getTimer(): CountDownTimer {
-        return object : CountDownTimer((testLengthMinutes * 60 * 1000).toLong(), 100) {
+    private fun getTimer(length: Int, onFinishFun: () -> Unit, onTickFun: () -> Unit = {;}): CountDownTimer {
+        return object : CountDownTimer((length).toLong(), 100) {
 
             override fun onTick(millisUntilFinished: Long) {
                 timerView.text = SimpleDateFormat("mm:ss.S").format(
                     Date(millisUntilFinished)
                 )
+                onTickFun()
             }
 
             override fun onFinish() {
-                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-                timerView.text = getString(R.string.result)
+                onFinishFun()
             }
         }
     }
+
+    private fun getTestTimer(): CountDownTimer {
+        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+            timerView.text = getString(R.string.result)
+        })
+    }
+
+    private fun getStartTimer(): CountDownTimer {
+        return getTimer(10 * 1000, onFinishFun = {
+            currentDistanceTextView.text = getString(R.string.go)
+            testStarted = true
+            testTimer.start()
+        }, onTickFun = {
+            currentDistanceTextView.text = getString(R.string.ready)
+        })
+    }
+
+
 
     private fun currentDistanceString(): String {
         return "%.0fm".format(currentDistanceMeters)
