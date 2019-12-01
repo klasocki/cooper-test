@@ -8,4 +8,12 @@
     <string name="curr_speed_label">Current</string>
     <string name="avg_speed_label">Average</string>
     <string name="initial_speed">0.0 m/s</string>
+    <string name="result">Result:</string>
+    <string name="TitleLocation">Activate location</string>
+    <string name="TextLocation">You have to enable the location to perform a test</string>
+    <string name="ActivateLocation">Enable location</string>
+    <string name="ActivateGPSButton">Enable GPS on your phone</string>
+    <string name="ConfirmExitMessage">Are you sure you want to exit?</string>
+    <string name="ConfirmExitAccept">Yes</string>
+    <string name="ConfirmExitRefuse">No</string>
 </resources>

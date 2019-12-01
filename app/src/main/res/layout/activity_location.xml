@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LocationActivity">
+
+    <TextView
+        android:id="@+id/TitleLocation"
+        android:layout_width="189dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="76dp"
+        android:text="@string/TitleLocation"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationPicture" />
+
+    <TextView
+        android:id="@+id/titleLocation"
+        android:layout_width="325dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/TextLocation"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TitleLocation" />
+
+    <Button
+        android:id="@+id/ActivateLocation"
+        android:layout_width="225dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="25dp"
+        android:onClick="activateLocation"
+        android:text="@string/ActivateLocation"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleLocation"
+        app:layout_constraintVertical_bias="0.246"
+        tools:text="Activate GPS on your phone" />
+
+    <ImageView
+        android:id="@+id/locationPicture"
+        android:layout_width="188dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/location" />
+</androidx.constraintlayout.widget.ConstraintLayout>

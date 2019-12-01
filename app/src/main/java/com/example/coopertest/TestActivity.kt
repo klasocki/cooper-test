@@ -1,7 +1,9 @@
 package com.example.coopertest
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -10,8 +12,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
-import android.provider.Settings
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -36,7 +36,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
 
-    private val PERMISSION_ID = 42
     private val testLengthMinutes = 1
 
 
@@ -107,15 +106,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestPermissionsAndLocationUpdates() {
-        if (!checkPermissions()) {
+        if (!checkPermissions() || !isLocationEnabled()) {
             requestPermissions()
-            return
-        }
-
-        if (!isLocationEnabled()) {
-            Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
             return
         }
 
@@ -154,7 +146,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
             override fun onFinish() {
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-                timerView.text = "Result:"
+                timerView.text = getString(R.string.result)
             }
         }
     }
@@ -168,13 +160,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun calculateSpeed(start: Location, end: Location): Float {
-        return (end.distanceTo(start) * 1000 / (end.time - start.time)).toFloat()
+        return (end.distanceTo(start) * 1000 / (end.time - start.time))
     }
 
-    private fun backToMain() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-    }
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
@@ -199,23 +187,21 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            PERMISSION_ID
-        )
+        val intent = Intent(this, LocationActivity::class.java)
+        startActivity(intent)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSION_ID && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            requestPermissionsAndLocationUpdates()
-        }
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.ConfirmExitMessage)
+            .setCancelable(false)
+            .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
+                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton(R.string.ConfirmExitRefuse, null)
+            .show()
     }
+
 }
