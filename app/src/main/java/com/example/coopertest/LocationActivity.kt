@@ -11,10 +11,6 @@ import android.provider.Settings
 import android.view.View
 import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.activity_location.*
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 
@@ -28,7 +24,7 @@ class LocationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
         if (checkPermissions() && !isLocationEnabled()){
-            ActivateLocation.text= "Activate GPS on your phone"
+            ActivateLocation.text= "@string/ActivateGPSButton"
         }
     }
 
@@ -93,7 +89,7 @@ class LocationActivity : AppCompatActivity() {
                 val intent = Intent(this, TestActivity::class.java)
                 startActivity(intent)
             } else{
-                ActivateLocation.text= "Activate GPS on your phone"
+                ActivateLocation.text= "@string/ActivateGPSButton"
             }
         }
     }
