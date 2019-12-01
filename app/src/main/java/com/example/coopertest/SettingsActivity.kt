@@ -2,9 +2,9 @@ package com.example.coopertest
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-//import androidx.preference.PreferenceFragmentCompat
 import com.example.coopertest.PrefsFragment as PreferenceFragmentCompat
+
+
 
 class SettingsActivity : AppCompatActivity() {
 

@@ -28,16 +28,16 @@
 
         <EditTextPreference
             app:key="name"
-            app:title="Your name"
+            app:title="@string/NameParameter"
             app:useSimpleSummaryProvider="true" />
 
         <com.example.coopertest.DatePreference
             app:key="birthday"
-            app:title="Birthday" />
+            app:title="@string/BirthdayParameter" />
 
         <SwitchPreferenceCompat
             app:key="athlete"
-            app:title="Are you an athlete ?" />
+            app:title="@string/AthleteParameter" />
 
     </PreferenceCategory>
 

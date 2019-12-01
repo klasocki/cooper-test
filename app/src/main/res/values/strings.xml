@@ -9,19 +9,15 @@
     <string name="avg_speed_label">Average</string>
     <string name="initial_speed">0.0 m/s</string>
     <string name="title_activity_settings">Settings</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="NameParameter">Your name</string>
+    <string name="BirthdayParameter">Birthday</string>
+    <string name="AthleteParameter">Are you an athlete ?</string>
+    <string name="VeryBad">Very bad</string>
+    <string name="Bad">Bad</string>
+    <string name="Average">Average</string>
+    <string name="Good">Good</string>
+    <string name="VeryGood">Very good</string>
+    <string name="goToSettingsMessage">Please complete informations in settings before to perform a test</string>
+    <string name="acceptGoToSettings">Complete</string>
+    <string name="goBackToMenu">Later</string>
 </resources>
