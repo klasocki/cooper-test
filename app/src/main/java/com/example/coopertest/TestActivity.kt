@@ -36,7 +36,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
 
-    private val PERMISSION_ID = 42
     private val testLengthMinutes = 1
 
 
@@ -147,7 +146,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
             override fun onFinish() {
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-                timerView.text = "Result:"
+                timerView.text = getString(R.string.result)
             }
         }
     }
@@ -161,13 +160,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun calculateSpeed(start: Location, end: Location): Float {
-        return (end.distanceTo(start) * 1000 / (end.time - start.time)).toFloat()
+        return (end.distanceTo(start) * 1000 / (end.time - start.time))
     }
 
-    private fun backToMain() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-    }
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
@@ -197,16 +192,16 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onBackPressed() {
-    AlertDialog.Builder(this)
-           .setMessage(R.string.ConfirmExitMessage)
-           .setCancelable(false)
-           .setPositiveButton(R.string.ConfirmExitAccept, DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-               mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-               val intent = Intent(this, MainActivity::class.java)
-               startActivity(intent)
-           })
-           .setNegativeButton(R.string.ConfirmExitRefuse, null)
-           .show();
-}
+        AlertDialog.Builder(this)
+            .setMessage(R.string.ConfirmExitMessage)
+            .setCancelable(false)
+            .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
+                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton(R.string.ConfirmExitRefuse, null)
+            .show()
+    }
 
 }

@@ -13,18 +13,16 @@ import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.activity_location.*
 
 
-
 class LocationActivity : AppCompatActivity() {
 
     private val PERMISSION_ID = 42
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
-        if (checkPermissions() && !isLocationEnabled()){
-            ActivateLocation.text= "@string/ActivateGPSButton"
+        if (checkPermissions() && !isLocationEnabled()) {
+            ActivateLocation.text = getString(R.string.ActivateGPSButton)
         }
     }
 
@@ -62,10 +60,10 @@ class LocationActivity : AppCompatActivity() {
         )
     }
 
-    fun activateLocation(v:View){
-        if (!checkPermissions()){
+    fun activateLocation(v: View) {
+        if (!checkPermissions()) {
             requestPermissions()
-        } else if (!isLocationEnabled()){
+        } else if (!isLocationEnabled()) {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
@@ -73,7 +71,7 @@ class LocationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isLocationEnabled() && checkPermissions()){
+        if (isLocationEnabled() && checkPermissions()) {
             val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
         }
@@ -88,8 +86,8 @@ class LocationActivity : AppCompatActivity() {
             if (isLocationEnabled()) {
                 val intent = Intent(this, TestActivity::class.java)
                 startActivity(intent)
-            } else{
-                ActivateLocation.text= "@string/ActivateGPSButton"
+            } else {
+                ActivateLocation.text = getString(R.string.ActivateGPSButton)
             }
         }
     }
