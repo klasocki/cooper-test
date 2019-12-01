@@ -4,15 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     tools:context=".LocationActivity">
 
     <TextView
         android:id="@+id/TitleLocation"
-        android:layout_width="189dp"
-        android:layout_height="37dp"
+        android:layout_width="270dp"
+        android:layout_height="45dp"
         android:layout_marginTop="76dp"
+        android:fontFamily="@font/aldrich"
         android:text="@string/TitleLocation"
         android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,29 +23,33 @@
 
     <TextView
         android:id="@+id/titleLocation"
-        android:layout_width="325dp"
-        android:layout_height="53dp"
+        android:layout_width="345dp"
+        android:layout_height="87dp"
         android:layout_marginTop="48dp"
+        android:fontFamily="@font/aldrich"
         android:text="@string/TextLocation"
         android:textAlignment="center"
-        android:textSize="18sp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TitleLocation" />
 
     <Button
         android:id="@+id/ActivateLocation"
-        android:layout_width="225dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="540dp"
+        android:layout_height="117dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/colorAccent"
+        android:fontFamily="@font/aldrich"
         android:onClick="activateLocation"
         android:text="@string/ActivateLocation"
+        android:textColor="@color/colorPrimary"
+        android:textColorLink="@color/colorAccent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleLocation"
-        app:layout_constraintVertical_bias="0.246"
         tools:text="Activate GPS on your phone" />
 
     <ImageView

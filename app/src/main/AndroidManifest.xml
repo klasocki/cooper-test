@@ -21,7 +21,8 @@
             android:name=".TestActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".LocationActivity"></activity>
+        <activity android:name=".LocationActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ProfileActivity" />
         <activity
             android:name=".MainActivity"
