@@ -41,8 +41,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private val testLengthMinutes = 1
 
     private val objectContext : App = App(this)
-    private val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-    private var miles : Boolean = mSharedPreference.getBoolean("miles", false)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,6 +168,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun currentDistanceString(): String {
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val miles = mSharedPreference.getBoolean("miles", false)
         if (!miles) {
             return "%.0f m".format(currentDistanceMeters)
         } else {
@@ -177,6 +178,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun formatSpeed(speed: Float): String {
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val miles = mSharedPreference.getBoolean("miles", false)
         if (!miles){
             return "%.1f km/h".format(speed*3.6)
         } else {
