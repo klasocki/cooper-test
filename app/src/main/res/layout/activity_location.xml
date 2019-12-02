@@ -21,20 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationPicture" />
 
-    <TextView
-        android:id="@+id/titleLocation"
-        android:layout_width="345dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="48dp"
-        android:fontFamily="@font/aldrich"
-        android:text="@string/TextLocation"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TitleLocation" />
-
     <Button
         android:id="@+id/ActivateLocation"
         android:layout_width="540dp"

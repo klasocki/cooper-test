@@ -205,7 +205,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun requestPermissionsAndLocationUpdates() {
-        if (!checkPermissions() || !isLocationEnabled()) {
+        if (!LocationHandler.checkPermissions(this) || !LocationHandler.isLocationEnabled(this)) {
             requestPermissions()
             return
         }
@@ -219,27 +219,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
-    }
-
-    private fun checkPermissions(): Boolean {
-        return (ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) ==
-                PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) ==
-                PackageManager.PERMISSION_GRANTED)
-    }
 
     private fun requestPermissions() {
         val intent = Intent(this, LocationActivity::class.java)
