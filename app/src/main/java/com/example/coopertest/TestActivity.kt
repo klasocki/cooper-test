@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
@@ -39,11 +38,13 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var startTimer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
+    private val maxLocationUpdateInterval: Long = 2500
+    private val minLocationUpdateInterval: Long = 1500
 
     private val testLengthMinutes = 2
     private val maxDistanceChangeBetweenLocations = 50
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var notifier: AudioNotifier
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
+        notifier = AudioNotifier(this)
         testTimer = getTestTimer()
         startTimer = getStartTimer()
     }
@@ -64,12 +65,10 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
         mMap = googleMap
         mMap.setMapStyle(style)
-        //Put the flag at one
         isMapReady = true
         requestPermissionsAndLocationUpdates()
         startTimer.start()
-        mediaPlayer = MediaPlayer.create(this, R.raw.left_10)
-        mediaPlayer.start()
+        notifier.playTestStartFile()
     }
 
     private val mLocationCallback = object : LocationCallback() {
@@ -82,15 +81,13 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun processNewLocation(newLocation: Location) {
-        if (!testStarted) {
-            return
-        }
-
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(newLocation.latitude, newLocation.longitude), 15.0f
             )
         )
+
+        if (!testStarted) { return }
 
         currentSpeedView.text = when {
             newLocation.hasSpeed() -> formatSpeed(newLocation.speed)
@@ -122,34 +119,23 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addPolyline(options)
     }
 
-    private fun requestPermissionsAndLocationUpdates() {
-        if (!checkPermissions() || !isLocationEnabled()) {
-            requestPermissions()
-            return
-        }
-
-        mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-            val location: Location? = task.result
-            if (location == null || firstLaunch) {
-                initLocationUpdates()
-                firstLaunch = false
-            }
-        }
+    private fun getTestTimer(): CountDownTimer {
+        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+            timerView.text = getString(R.string.result)
+        }, onTickFun = {
+            notifier.notifyAboutTimeLeft(it)
+        })
     }
 
-    private fun initLocationUpdates() {
-        val mLocationRequest = LocationRequest()
-        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        // Location request interval: max and min
-        mLocationRequest.interval = 2500
-        mLocationRequest.fastestInterval = 1500
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest,
-            mLocationCallback,
-            Looper.myLooper()
-        )
+    private fun getStartTimer(): CountDownTimer {
+        return getTimer(10 * 1000, onFinishFun = {
+            currentDistanceTextView.text = getString(R.string.go)
+            testStarted = true
+            testTimer.start()
+        }, onTickFun = {
+            currentDistanceTextView.text = getString(R.string.ready)
+        })
     }
 
     private fun getTimer(
@@ -172,59 +158,48 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getTestTimer(): CountDownTimer {
-        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = {
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-            timerView.text = getString(R.string.result)
-        }, onTickFun = {
-            // GCD of all the notification periods is 5sec, but milisUntilFinished is approximate
-            // 50 error margin works good in practice
-            if (it.toInt() % (5 * 1000) <= 50 || it.toInt() % (5 * 1000) >= 5 * 1000 - 50) {
-                notifyAboutTime(it)
-            }
-        })
-    }
-
-    private fun playNewFile(file: Int) {
-        mediaPlayer.release()
-        mediaPlayer = MediaPlayer.create(this, file)
-        mediaPlayer.start()
-    }
-
-    private fun notifyAboutTime(milisUntilFinished: Long) {
-        val secondsUntilFinished = (milisUntilFinished / 1000).toInt()
-        var fileToPlay = -1
-        for (timeLeft in listOf(10, 15, 30, 60, 120, 240, 360, 480, 600)){
-            if (secondsUntilFinished in timeLeft-1..timeLeft) {
-                fileToPlay = resources.getIdentifier("left_$timeLeft", "raw", packageName)
-            }
-        }
-        if (fileToPlay != -1){
-            playNewFile(fileToPlay)
-        }
-    }
-
-    private fun getStartTimer(): CountDownTimer {
-        return getTimer(10 * 1000, onFinishFun = {
-            currentDistanceTextView.text = getString(R.string.go)
-            testStarted = true
-            testTimer.start()
-        }, onTickFun = {
-            currentDistanceTextView.text = getString(R.string.ready)
-        })
-    }
-
-
     private fun currentDistanceString(): String {
         return "%.0fm".format(currentDistanceMeters)
     }
+
 
     private fun formatSpeed(speed: Float): String {
         return "%.1f m/s".format(speed)
     }
 
+
     private fun calculateSpeed(start: Location, end: Location): Float {
         return (end.distanceTo(start) * 1000 / (end.time - start.time))
+    }
+
+    private fun initLocationUpdates() {
+        val mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        // Location request interval: max and min
+        mLocationRequest.interval = maxLocationUpdateInterval
+        mLocationRequest.fastestInterval = minLocationUpdateInterval
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient.requestLocationUpdates(
+            mLocationRequest,
+            mLocationCallback,
+            Looper.myLooper()
+        )
+    }
+
+    private fun requestPermissionsAndLocationUpdates() {
+        if (!checkPermissions() || !isLocationEnabled()) {
+            requestPermissions()
+            return
+        }
+
+        mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+            val location: Location? = task.result
+            if (location == null || firstLaunch) {
+                initLocationUpdates()
+                firstLaunch = false
+            }
+        }
     }
 
 
