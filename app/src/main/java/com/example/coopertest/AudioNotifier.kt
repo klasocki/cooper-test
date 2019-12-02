@@ -30,6 +30,10 @@ class AudioNotifier(private val context: Context) {
         playNewFile(R.raw.left_10)
     }
 
+    fun stop() {
+        mediaPlayer.release()
+    }
+
     private fun playNewFile(file: Int) {
         mediaPlayer.release()
         mediaPlayer = MediaPlayer.create(context, file)

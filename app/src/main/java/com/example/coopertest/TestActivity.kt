@@ -158,6 +158,23 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.ConfirmExitMessage)
+            .setCancelable(false)
+            .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
+                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+                startTimer.cancel()
+                testTimer.cancel()
+                notifier.stop()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton(R.string.ConfirmExitRefuse, null)
+            .show()
+    }
+
+
     private fun currentDistanceString(): String {
         return "%.0fm".format(currentDistanceMeters)
     }
@@ -166,7 +183,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun formatSpeed(speed: Float): String {
         return "%.1f m/s".format(speed)
     }
-
 
     private fun calculateSpeed(start: Location, end: Location): Float {
         return (end.distanceTo(start) * 1000 / (end.time - start.time))
@@ -187,6 +203,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
+
     private fun requestPermissionsAndLocationUpdates() {
         if (!checkPermissions() || !isLocationEnabled()) {
             requestPermissions()
@@ -201,7 +218,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
@@ -228,19 +244,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun requestPermissions() {
         val intent = Intent(this, LocationActivity::class.java)
         startActivity(intent)
-    }
-
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.ConfirmExitMessage)
-            .setCancelable(false)
-            .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
-                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
-            .setNegativeButton(R.string.ConfirmExitRefuse, null)
-            .show()
     }
 
 }
