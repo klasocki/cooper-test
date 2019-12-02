@@ -1,19 +1,15 @@
 package com.example.coopertest
 
-import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -66,9 +62,20 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.setMapStyle(style)
         isMapReady = true
+        startTest()
+    }
+
+    private fun startTest(){
         requestPermissionsAndLocationUpdates()
         startTimer.start()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         notifier.playTestStartFile()
+    }
+
+    private fun finishTest(){
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+        timerView.text = getString(R.string.result)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private val mLocationCallback = object : LocationCallback() {
@@ -120,10 +127,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getTestTimer(): CountDownTimer {
-        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = {
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-            timerView.text = getString(R.string.result)
-        }, onTickFun = {
+        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = { finishTest() },
+            onTickFun = {
             notifier.notifyAboutTimeLeft(it)
         })
     }
@@ -163,7 +168,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             .setMessage(R.string.ConfirmExitMessage)
             .setCancelable(false)
             .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
-                mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+                finishTest()
                 startTimer.cancel()
                 testTimer.cancel()
                 notifier.stop()
