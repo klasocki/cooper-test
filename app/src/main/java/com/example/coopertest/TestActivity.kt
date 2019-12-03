@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
@@ -55,6 +56,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         notifier = AudioNotifier(this)
         testTimer = getTestTimer()
         startTimer = getStartTimer()
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -69,6 +71,11 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         requestPermissionsAndLocationUpdates()
         startTimer.start()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (Build.VERSION.SDK_INT >= 27) {
+            setShowWhenLocked(true)
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+        }
         notifier.playTestStartFile()
     }
 
@@ -76,6 +83,11 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
         timerView.text = getString(R.string.result)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (Build.VERSION.SDK_INT >= 27) {
+            setShowWhenLocked(false)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+        }
     }
 
     private val mLocationCallback = object : LocationCallback() {
