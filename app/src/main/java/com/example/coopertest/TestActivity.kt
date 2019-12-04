@@ -1,16 +1,13 @@
 package com.example.coopertest
 
 import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.location.Location
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Looper
+import android.os.*
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,32 +20,32 @@ import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var isMapReady: Boolean = false
-    private var firstLaunch: Boolean = true
     private var testStarted: Boolean = false
 
     private lateinit var testTimer: CountDownTimer
     private lateinit var startTimer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
-    private val maxLocationUpdateInterval: Long = 2500
-    private val minLocationUpdateInterval: Long = 1500
 
     private val testLengthMinutes = 2
     private val maxDistanceChangeBetweenLocations = 50
 
     private lateinit var notifier: AudioNotifier
 
+    private lateinit var locationService: LocationService
+    private var isServiceBound = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -56,6 +53,10 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         notifier = AudioNotifier(this)
         testTimer = getTestTimer()
         startTimer = getStartTimer()
+
+        val intent = Intent(this, LocationService::class.java)
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        startService(intent)
 
     }
 
@@ -67,8 +68,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         startTest()
     }
 
-    private fun startTest(){
-        requestPermissionsAndLocationUpdates()
+    private fun startTest() {
         startTimer.start()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= 27) {
@@ -79,23 +79,17 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         notifier.playTestStartFile()
     }
 
-    private fun finishTest(){
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+    private fun finishTest() {
+        unbindService(serviceConnection)
+        val intent = Intent(this, LocationService::class.java)
+        stopService(intent)
+        isServiceBound = false
         timerView.text = getString(R.string.result)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= 27) {
             setShowWhenLocked(false)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-        }
-    }
-
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            if (!isMapReady || locationResult.lastLocation == null) return
-            val currentLocation = locationResult.lastLocation
-
-            processNewLocation(currentLocation)
         }
     }
 
@@ -106,7 +100,9 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         )
 
-        if (!testStarted) { return }
+        if (!testStarted) {
+            return
+        }
 
         currentSpeedView.text = when {
             newLocation.hasSpeed() -> formatSpeed(newLocation.speed)
@@ -141,8 +137,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getTestTimer(): CountDownTimer {
         return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = { finishTest() },
             onTickFun = {
-            notifier.notifyAboutTimeLeft(it)
-        })
+                notifier.notifyAboutTimeLeft(it)
+            })
     }
 
     private fun getStartTimer(): CountDownTimer {
@@ -175,6 +171,29 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as LocationService.LocalBinder
+            locationService = binder.getService()
+            isServiceBound = true
+            LocalBroadcastManager.getInstance(this@TestActivity).registerReceiver(locationReceiver,
+                IntentFilter(locationService.ACTION_BROADCAST))
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isServiceBound = false
+        }
+
+    }
+
+    private val locationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val location: Location? = intent!!.getParcelableExtra(locationService.EXTRA_LOCATION)
+            if (location != null)
+                processNewLocation(location)
+        }
+    }
+
     override fun onBackPressed() {
         AlertDialog.Builder(this)
             .setMessage(R.string.ConfirmExitMessage)
@@ -203,43 +222,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun calculateSpeed(start: Location, end: Location): Float {
         return (end.distanceTo(start) * 1000 / (end.time - start.time))
-    }
-
-    private fun initLocationUpdates() {
-        val mLocationRequest = LocationRequest()
-        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        // Location request interval: max and min
-        mLocationRequest.interval = maxLocationUpdateInterval
-        mLocationRequest.fastestInterval = minLocationUpdateInterval
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest,
-            mLocationCallback,
-            Looper.myLooper()
-        )
-    }
-
-
-    private fun requestPermissionsAndLocationUpdates() {
-        if (!LocationHandler.checkPermissions(this) || !LocationHandler.isLocationEnabled(this)) {
-            requestPermissions()
-            return
-        }
-
-        mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-            val location: Location? = task.result
-            if (location == null || firstLaunch) {
-                initLocationUpdates()
-                firstLaunch = false
-            }
-        }
-    }
-
-
-    private fun requestPermissions() {
-        val intent = Intent(this, LocationActivity::class.java)
-        startActivity(intent)
     }
 
 }
