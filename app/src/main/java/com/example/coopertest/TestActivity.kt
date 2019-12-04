@@ -14,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.android.synthetic.main.activity_test.*
@@ -33,8 +34,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
 
-    private val testLengthMinutes = 2
-    private val maxDistanceChangeBetweenLocations = 50
+    private val testLengthMinutes = 1
 
     private lateinit var notifier: AudioNotifier
 
@@ -84,7 +84,20 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         val intent = Intent(this, LocationService::class.java)
         stopService(intent)
         isServiceBound = false
+
         timerView.text = getString(R.string.result)
+
+        if (routePoints.count() > 0){
+            val firstLocation = LatLng(routePoints.first().latitude, routePoints.first().longitude)
+            val lastLocation = LatLng(routePoints.last().latitude, routePoints.last().longitude)
+            val middleLocation = LatLngBounds.builder().include(firstLocation).include(lastLocation).build().center
+            mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(middleLocation.latitude, middleLocation.longitude), 12.5f
+                )
+            )
+        }
+
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= 27) {
             setShowWhenLocked(false)
@@ -118,7 +131,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateMapAndSpeed(newLocation: Location) {
         val distanceChange = newLocation.distanceTo(routePoints.last())
-//        if (distanceChange > )
         currentDistanceMeters += distanceChange
         currentDistanceTextView.text = currentDistanceString()
 
