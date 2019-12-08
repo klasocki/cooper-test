@@ -26,6 +26,8 @@
     <string name="table_description">Table with Cooper test results</string>
     <string name="info_text">
         "&lt;p>&lt;big>&lt;b>What is the Cooper (12 minute run) Test?&lt;/b>&lt;/big>&lt;/p>"
+        "&lt;p>It is one of the most popular stamina tests for athletes and common people alike, "
+        "and a great way to evaluate your fitness and compare it with your friends.&lt;/p>"
         "&lt;p>From Wikipedia, the free encyclopedia:&lt;br/>"
         "\"The Cooper test is a test of physical fitness. It was designed by Kenneth H. Cooper in 1968 for US military use."
         "The point of the test is to run as far as possible within 12 minutes."
@@ -40,7 +42,7 @@
 
         "&lt;p>&lt;big>&lt;b>Before performing the test:&lt;/b>&lt;/big>"
         "&lt;ul>&lt;li>\tFill your data in settings, so that we can interpret your results.&lt;/li>"
-        "&lt;li>\tActivate GPS on your device (+ mobile data if you can, for better accuracy route display)&lt;/li>"
+        "&lt;li>\tActivate GPS on your device (+ mobile data if you can, for better accuracy and route display)&lt;/li>"
         "&lt;li>\tFind a clear, flat, not slippery path for running. The app should be used outdoors for maximum GPS accuracy.&lt;/li>"
         "&lt;li>\tMake sure you warm up for at least 15 minutes, in order to avoid injuries and get the best possible result&lt;/li>&lt;/ul>"
         "You can run in circles, or come back the same way. For reasonable accuracy the length of the "
@@ -51,7 +53,7 @@
         "indicated with the same beeping sounds as the pre-test countdown.&lt;/p>"
 
         "&lt;p>Good luck!!!&lt;/p>"
-        "&lt;p>Here is the table for interpreting your results (brief description will be visible after you complete the test as well)&lt;/p>"
+        "&lt;p>Here is the table (from Wikipedia) for interpreting your results (brief description will be visible after you complete the test as well)&lt;/p>"
     </string>
     <string name="action_settings">Settings</string>
 </resources>
