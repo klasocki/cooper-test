@@ -21,4 +21,37 @@
     <string name="ConfirmExitMessage">Are you sure you want to exit?</string>
     <string name="ConfirmExitAccept">Yes</string>
     <string name="ConfirmExitRefuse">No</string>
+    <string name="title_activity_info">InfoActivity</string>
+    <string name="info_button_text">Info</string>
+    <string name="table_description">Table with Cooper test results</string>
+    <string name="info_text">
+        "&lt;p>&lt;big>&lt;b>What is the Cooper (12 minute run) Test?&lt;/b>&lt;/big>&lt;/p>"
+        "&lt;p>From Wikipedia, the free encyclopedia:&lt;br/>"
+        "\"The Cooper test is a test of physical fitness. It was designed by Kenneth H. Cooper in 1968 for US military use."
+        "The point of the test is to run as far as possible within 12 minutes."
+        "The test is meant to measure the condition of the person taking it and therefore it is supposed"
+        "to be run at a steady pace instead of sprints and fast running."
+        "The outcome is based on the distance the test person ran, their age and their sex.\"&lt;br/>"
+        "You can find the table with result interpretation below&lt;/p>"
+
+        "&lt;p>The aim of our application is to provide an easy, automatic way to perform the test for every "
+        "owner of a device with geolocation. "
+        "No need for someone else to measure your distance and time - it's all there in your app!&lt;/p>"
+
+        "&lt;p>&lt;big>&lt;b>Before performing the test:&lt;/b>&lt;/big>"
+        "&lt;ul>&lt;li>\tFill your data in settings, so that we can interpret your results.&lt;/li>"
+        "&lt;li>\tActivate GPS on your device (+ mobile data if you can, for better accuracy route display)&lt;/li>"
+        "&lt;li>\tFind a clear, flat, not slippery path for running. The app should be used outdoors for maximum GPS accuracy.&lt;/li>"
+        "&lt;li>\tMake sure you warm up for at least 15 minutes, in order to avoid injuries and get the best possible result&lt;/li>&lt;/ul>"
+        "You can run in circles, or come back the same way. For reasonable accuracy the length of the "
+        "circle / one way path should be at least ~100m (yards)&lt;br/>&lt;br/>&lt;/p>"
+
+        "&lt;p>The test will start with a 10 second countdown with beep sounds, then an actual 12 minute test begins. "
+        "You will be notified (text-to-speech audio) when you have 10m, 8m, 6m, 4m, 2m, 1m, 30s, 15s left. The last 10 seconds are "
+        "indicated with the same beeping sounds as the pre-test countdown.&lt;/p>"
+
+        "&lt;p>Good luck!!!&lt;/p>"
+        "&lt;p>Here is the table for interpreting your results (brief description will be visible after you complete the test as well)&lt;/p>"
+    </string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -24,6 +24,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun goToInfo(v: View) {
+        val intent = Intent(this, InfoActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onBackPressed() {
         finishAffinity()
     }
