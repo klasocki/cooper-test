@@ -51,7 +51,7 @@
         android:layout_marginTop="66dp"
         android:fontFamily="sans-serif"
         android:onClick="goToSettings"
-        android:text="Settings"
+        android:text="@string/settings"
         android:textAlignment="center"
         android:textSize="36sp"
         android:visibility="visible"

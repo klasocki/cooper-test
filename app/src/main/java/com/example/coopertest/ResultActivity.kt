@@ -15,20 +15,20 @@ import androidx.preference.PreferenceManager
 
 class ResultActivity : AppCompatActivity() {
 
-    private val objectContext : App = App(this)
+    private val objectContext: App = App(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle("Results")
-        val listOfResults= Storage().loadResults(this)
+        val listOfResults = Storage().loadResults(this)
         fillTable(listOfResults)
     }
 
-    fun fillTable(listOfResults : ArrayList<Results>?){
+    fun fillTable(listOfResults: ArrayList<Results>?) {
         val table = findViewById<TableLayout>(R.id.tableResults)
-        var placeInList=0
+        var placeInList = 0
         if (listOfResults != null) {
             for (i in listOfResults) {
 
@@ -37,24 +37,24 @@ class ResultActivity : AppCompatActivity() {
 
                 var textview = TextView(this)
                 val stringDate = android.text.format.DateFormat.format("dd-MM-yyyy", i.getDate())
-                textview.setText(stringDate)
-                textview.setGravity(Gravity.CENTER_HORIZONTAL)
+                textview.text = stringDate
+                textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
 
                 textview = TextView(this)
-                textview.setText(formatSpeed(i.getAvgSpeed()))
-                textview.setGravity(Gravity.CENTER_HORIZONTAL)
+                textview.text = formatSpeed(i.getAvgSpeed())
+                textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
                 textview = TextView(this)
-                textview.setText(formatDistance(i.getMeters()))
-                textview.setGravity(Gravity.CENTER_HORIZONTAL)
+                textview.text = formatDistance(i.getMeters())
+                textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
                 textview = TextView(this)
-                textview.setText(i.getLevel())
-                textview.setGravity(Gravity.CENTER_HORIZONTAL)
+                textview.text = i.getLevel()
+                textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
 
@@ -68,7 +68,7 @@ class ResultActivity : AppCompatActivity() {
 
 
                 table.addView(newRow)
-                placeInList+=1
+                placeInList += 1
             }
         }
     }
@@ -85,26 +85,26 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun formatDistance(meter: Double): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val mSharedPreference =
+            PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
         val miles = mSharedPreference.getBoolean("miles", false)
         if (!miles) {
             return "%.0f m".format(meter)
         } else {
-            return "%.0f yd".format(meter*1.094)
+            return "%.0f yd".format(meter * 1.094)
         }
     }
 
     private fun formatSpeed(speed: Double): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val mSharedPreference =
+            PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
         val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles){
-            return "%.1f km/h".format(speed*3.6)
+        return if (!miles) {
+            "%.1f km/h".format(speed * 3.6)
         } else {
-            return "%.1f mph".format(speed*2.23694)
+            "%.1f mph".format(speed * 2.23694)
         }
     }
-
-
 
 
 }

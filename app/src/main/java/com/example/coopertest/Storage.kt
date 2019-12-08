@@ -32,9 +32,8 @@ class Storage {
 
     fun loadResults(context: Context): ArrayList<Results>? {
         // used for retrieving arraylist from json formatted string
-        val settings: SharedPreferences
-        var results: ArrayList<Results>
-        settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val results: ArrayList<Results>
+        val settings: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         if (settings.contains(RESULTS)) {
             val jsonResults = settings.getString(RESULTS, null)
 
@@ -53,15 +52,15 @@ class Storage {
     fun addResult(context: Context, myModel: Results) {
         var results: MutableList<Results>? = loadResults(context)
         if (results == null)
-            results = ArrayList<Results>()
-        results!!.add(0, myModel)
+            results = ArrayList()
+        results.add(0, myModel)
         storeResults(context, results)
     }
 
     fun removeResult(context: Context, myModel: Results) {
         val results = loadResults(context)
         if (results != null) {
-            results!!.remove(myModel)
+            results.remove(myModel)
             storeResults(context, results)
         }
     }
