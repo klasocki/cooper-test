@@ -46,17 +46,18 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="253dp"
+        android:layout_width="0dp"
+        android:layout_height="274dp"
         android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentDistanceTextView"
-        tools:context=".TestActivity"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:context=".TestActivity" />
 
     <TextView
         android:id="@+id/timerView"
-        android:layout_width="217dp"
-        android:layout_height="53dp"
+        android:layout_width="227dp"
+        android:layout_height="57dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/aldrich"
         android:textAlignment="textStart"
@@ -67,7 +68,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="09:47.6" />
+        tools:text="00:00.0" />
 
     <TextView
         android:id="@+id/currentDistanceTextView"

@@ -1,10 +1,9 @@
 package com.example.coopertest
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.LocationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -21,49 +20,27 @@ class LocationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
-        if (checkPermissions() && !isLocationEnabled()) {
+        if (LocationHandler.checkPermissions(this) && !LocationHandler.isLocationEnabled(this)) {
             ActivateLocation.text = getString(R.string.ActivateGPSButton)
         }
     }
 
-
-    private fun checkPermissions(): Boolean {
-        return (ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) ==
-                PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) ==
-                PackageManager.PERMISSION_GRANTED)
-    }
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            PERMISSION_ID
+    fun requestPermissions() {
+        var perms = arrayOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
+        if (Build.VERSION.SDK_INT >= 29){
+            perms += Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        }
+        ActivityCompat.requestPermissions(this, perms, PERMISSION_ID)
     }
 
-    private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
-    }
 
     fun activateLocation(v: View) {
-        if (!checkPermissions()) {
+        if (!LocationHandler.checkPermissions(this)) {
             requestPermissions()
-        } else if (!isLocationEnabled()) {
+        } else if (!LocationHandler.isLocationEnabled(this)) {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
@@ -71,7 +48,7 @@ class LocationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isLocationEnabled() && checkPermissions()) {
+        if (LocationHandler.isLocationEnabled(this) && LocationHandler.checkPermissions(this)) {
             val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
         }
@@ -83,7 +60,7 @@ class LocationActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         if (requestCode == PERMISSION_ID && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (isLocationEnabled()) {
+            if (LocationHandler.isLocationEnabled(this)) {
                 val intent = Intent(this, TestActivity::class.java)
                 startActivity(intent)
             } else {
