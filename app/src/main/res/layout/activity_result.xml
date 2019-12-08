@@ -4,4 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResultActivity"/>
+    tools:context=".ResultActivity">
+
+    <TableLayout
+        android:id="@+id/tableResults"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+
+            android:id="@+id/headerRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- first element of the row-->
+            <TextView
+
+                android:id="@+id/headerDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#b0b0b0"
+                android:padding="18dip"
+                android:text="Date"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="12dp" />
+
+            <TextView
+
+                android:id="@+id/AvgSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FF0000"
+                android:padding="18dip"
+                android:text="Avg Speed"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="14dp" />
+
+            <TextView
+
+                android:id="@+id/Meters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FF0000"
+                android:padding="18dip"
+                android:text="Distance"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="14dp" />
+
+            <TextView
+
+                android:id="@+id/Result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FF0000"
+                android:padding="18dip"
+                android:text="Result"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="14dp" />
+
+        </TableRow>
+
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

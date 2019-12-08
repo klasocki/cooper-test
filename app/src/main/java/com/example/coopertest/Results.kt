@@ -1,21 +1,35 @@
 package com.example.coopertest
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
-import com.example.coopertest.R
+import android.location.Location
 import androidx.preference.PreferenceManager
+import com.google.android.gms.maps.model.LatLng
+import com.google.gson.annotations.Expose
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Results (meters : Double, context: Context){
+class Results (meters : Double, routePoints:List<Location>, avgSpeed: Double, context: Context)    {
 
-    var meters : Double=0.0
-    var age: Int=0
-    var athlete: Boolean = false
-    var gender : String = ""
-    val context:Context=context
+    @Expose
+    private var meters : Double=0.0
+    private var age: Int=0
+    private var athlete: Boolean = false
+    private var gender : String = ""
+    private val context:Context=context
+    @Expose
+    private var level: String = ""
+    private var previousStep=null
+    private var nextStep=null
+    @Expose
+    private var routePoints: List<Location> = emptyList()
+    @Expose
+    private var test : List<LatLng> = emptyList()
+    @Expose
+    private var date: Date = Date()
+    @Expose
+    private var averageSpeed = 0.0
+
 
     init {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
@@ -24,7 +38,10 @@ class Results (meters : Double, context: Context){
         this.meters=meters
         athlete = mSharedPreference.getBoolean("athlete", false)
         gender = mSharedPreference.getString("gender", "Male")!!
-
+        level=setResultTest()
+        this.routePoints=routePoints
+        this.test+=LatLng(routePoints.get(0).latitude,routePoints.get(0).longitude)
+        this.averageSpeed= avgSpeed
     }
 
     private fun getAge(dobString: String): Int {
@@ -53,8 +70,8 @@ class Results (meters : Double, context: Context){
         return age
     }
 
-    fun getLevel(): String {
-        var yourResult : String=""
+    fun setResultTest(): String {
+        var yourResult : String =""
         if (athlete==true) {
             if ((meters < 2800 && gender == "Male") || (meters < 2100 && gender == "Female")) {
                 yourResult = "Very bad"
@@ -153,9 +170,30 @@ class Results (meters : Double, context: Context){
                     yourResult = "Very good"
                 }
             }
+
         }
         return yourResult
-
     }
+
+    fun getLevel(): String{
+        return level
+    }
+
+    fun getMeters() : Double {
+        return meters
+    }
+
+    fun getDate(): Date {
+        return date
+    }
+
+    fun getAvgSpeed(): Double {
+        return averageSpeed
+    }
+
+    fun getRoutePoints(): List<Location>{
+        return routePoints
+    }
+
 
 }

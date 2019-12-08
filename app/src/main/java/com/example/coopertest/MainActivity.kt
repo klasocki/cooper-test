@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 
 import kotlinx.android.synthetic.main.activity_main.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import java.io.Serializable
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +26,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun goToTest(v: View) {
+
+
+    fun goToTest(v : View) {
         if (isParametersComplete()) {
             val intent = Intent(this, TestActivity::class.java)
             startActivity(intent)
@@ -30,16 +37,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun goToSettings(v: View) {
+    fun goToSettings(v : View) {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
     }
 
+    fun goToResult(v : View) {
+            val intent = Intent(this, ResultActivity::class.java)
+            startActivity(intent)
+    }
+
     fun isParametersComplete(): Boolean {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val dateBirthday = mSharedPreference.getString("birthday", "null")
-        val gender = mSharedPreference.getString("gender", "Male")!!
-
         return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
             && mSharedPreference.contains("gender"))
 
