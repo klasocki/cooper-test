@@ -20,4 +20,8 @@
     <string name="goToSettingsMessage">Please complete informations in settings before to perform a test</string>
     <string name="acceptGoToSettings">Complete</string>
     <string name="goBackToMenu">Later</string>
+    <string name="date">Date</string>
+    <string name="avg_speed">Avg Speed</string>
+    <string name="distance">Distance</string>
+    <string name="result">Result</string>
 </resources>

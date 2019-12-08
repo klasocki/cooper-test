@@ -18,59 +18,63 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableRow
-
             android:id="@+id/headerRow"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            tools:ignore="UselessParent">
             <!-- first element of the row-->
             <TextView
 
                 android:id="@+id/headerDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#b0b0b0"
+                android:background="@color/colorPrimary"
                 android:padding="18dip"
-                android:text="Date"
+                android:text="@string/date"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="12dp" />
+                android:textSize="14dp"
+                tools:ignore="SpUsage" />
 
             <TextView
 
                 android:id="@+id/AvgSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FF0000"
+                android:background="@color/colorPrimary"
                 android:padding="18dip"
-                android:text="Avg Speed"
+                android:text="@string/avg_speed"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                tools:ignore="SpUsage" />
 
             <TextView
 
                 android:id="@+id/Meters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FF0000"
+                android:background="@color/colorPrimary"
                 android:padding="18dip"
-                android:text="Distance"
+                android:text="@string/distance"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                tools:ignore="SpUsage" />
 
             <TextView
 
                 android:id="@+id/Result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FF0000"
+                android:background="@color/colorPrimary"
                 android:padding="18dip"
-                android:text="Result"
+                android:text="@string/result"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                tools:ignore="SpUsage" />
+
 
         </TableRow>
 

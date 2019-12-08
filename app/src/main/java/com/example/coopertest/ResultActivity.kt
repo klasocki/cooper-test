@@ -28,12 +28,12 @@ class ResultActivity : AppCompatActivity() {
 
     fun fillTable(listOfResults : ArrayList<Results>?){
         val table = findViewById<TableLayout>(R.id.tableResults)
-        var placeInList:Int=0
+        var placeInList=0
         if (listOfResults != null) {
             for (i in listOfResults) {
 
                 val newRow = TableRow(this)
-                val myPlaceInList= placeInList
+                //val myPlaceInList= placeInList
 
                 var textview = TextView(this)
                 val stringDate = android.text.format.DateFormat.format("dd-MM-yyyy", i.getDate())
@@ -41,13 +41,14 @@ class ResultActivity : AppCompatActivity() {
                 textview.setGravity(Gravity.CENTER_HORIZONTAL)
                 newRow.addView(textview)
 
+
                 textview = TextView(this)
-                textview.setText(formatSpeed(i.getAvgSpeed()).toString())
+                textview.setText(formatSpeed(i.getAvgSpeed()))
                 textview.setGravity(Gravity.CENTER_HORIZONTAL)
                 newRow.addView(textview)
 
                 textview = TextView(this)
-                textview.setText(formatDistance(i.getMeters()).toString())
+                textview.setText(formatDistance(i.getMeters()))
                 textview.setGravity(Gravity.CENTER_HORIZONTAL)
                 newRow.addView(textview)
 
@@ -57,12 +58,12 @@ class ResultActivity : AppCompatActivity() {
                 newRow.addView(textview)
 
 
-                newRow.setClickable(true)
+                /*newRow.setClickable(true)
                 newRow.setOnClickListener{
                     val intent = Intent(this, TestActivity::class.java)
                     intent.putExtra("Results", myPlaceInList)
                     startActivity(intent)
-                }
+                }*/
 
 
 

@@ -12,19 +12,20 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
 import java.util.*
-
-
 
 class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -36,14 +37,12 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var timer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
-    private var avgSpeedSoFar = 0.0
+    private var avgSpeed : Double = 0.0
 
     private val PERMISSION_ID = 42
     private val testLengthMinutes = 1
 
     private val objectContext : App = App(this)
-
-    private var review=0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +53,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
-        var numResult= getIntent().getSerializableExtra("Results")
-        //Review an old result
-        if (numResult!=null){
-
-            review=1
-            reviewOldResult(numResult as Int)
-            return
-        }
-
         resultTextView.text=""
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -71,47 +60,13 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         timer = getTimer()
     }
 
-    fun reviewOldResult( numResult : Int){
-        val listOfResults=Storage().loadResults(this)
-        var myResult = listOfResults!!.get(numResult)
-        routePoints=myResult.getRoutePoints()
-        timerView.text = "Result:"
-        resultTextView.text=myResult.getLevel()
-        avgSpeedView.text=formatSpeed(myResult.getAvgSpeed().toFloat())
-        labelCurrSpeed.visibility= View.INVISIBLE
-        currentSpeedView.visibility= View.INVISIBLE
-        currentDistanceMeters=myResult.getMeters()
-        currentDistanceTextView.text=currentDistanceString()
-    }
-
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         //Put the flag at one
         isMapReady = true
-        if (review==0) {
-            requestPermissionsAndLocationUpdates()
-            timer.start()
-            currentDistanceTextView.text = currentDistanceString()
-        } else {
-            generateCompleteMap()
-        /*
-            val b : LatLngBounds.Builder = LatLngBounds.Builder()
-            for (l in routePoints) {
-                b.include(LatLng(l.latitude, l.longitude))
-            }
-            val bounds : LatLngBounds = b.build()
-            val cu : CameraUpdate = CameraUpdateFactory.newLatLngBounds (bounds, 1);
-            mMap.animateCamera(cu);*/
-
-
-        }
-    }
-
-    private fun generateCompleteMap(){
-        for (i in 0 until routePoints.size-1){
-            createLineOnMap(routePoints.get(i), routePoints.get(i+1))
-        }
+        requestPermissionsAndLocationUpdates()
+        timer.start()
+        currentDistanceTextView.text = currentDistanceString()
     }
 
     private val mLocationCallback = object : LocationCallback() {
@@ -146,19 +101,15 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         currentDistanceMeters += newLocation.distanceTo(routePoints.last())
         currentDistanceTextView.text = currentDistanceString()
 
-        avgSpeedSoFar =
+        avgSpeed =
             currentDistanceMeters * 1000 / (newLocation.time - routePoints.first().time)
-        avgSpeedView.text = formatSpeed(avgSpeedSoFar.toFloat())
+        avgSpeedView.text = formatSpeed(avgSpeed.toFloat())
 
-        createLineOnMap(routePoints.last(), newLocation)
-    }
-
-    private fun createLineOnMap(lastPoint: Location, newPoint: Location){
         val options = PolylineOptions()
         options.color(Color.RED)
         options.width(5f)
-        options.add(LatLng(lastPoint.latitude, lastPoint.longitude))
-        options.add(LatLng(newPoint.latitude, newPoint.longitude))
+        options.add(LatLng(routePoints.last().latitude, routePoints.last().longitude))
+        options.add(LatLng(newLocation.latitude, newLocation.longitude))
         mMap.addPolyline(options)
     }
 
@@ -213,7 +164,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onFinish() {
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback)
                 timerView.text = "Result:"
-                val objectResult= Results(currentDistanceMeters, routePoints, avgSpeedSoFar, objectContext.getContext() )
+                val objectResult= Results(currentDistanceMeters, routePoints, avgSpeed, objectContext.getContext() )
                 val yourLevel= objectResult.getLevel()
                 resultTextView.text=yourLevel
                 Storage().addResult(objectContext.getContext(), objectResult)
@@ -227,7 +178,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         if (!miles) {
             return "%.0f m".format(currentDistanceMeters)
         } else {
-            return "%.0f yd".format(currentDistanceMeters*1.094)
+            return "%.0f yd".format(currentDistanceMeters*1.09361)
         }
     }
 
@@ -292,11 +243,4 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             requestPermissionsAndLocationUpdates()
         }
     }
-
-    override fun onBackPressed() {
-        this.finish()
-    }
-
 }
-
-
