@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="?attr/primaryBackgroundColor"
     tools:context=".LocationActivity">
 
     <TextView
@@ -15,7 +15,7 @@
         android:fontFamily="@font/aldrich"
         android:text="@string/TitleLocation"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,12 +26,11 @@
         android:layout_width="540dp"
         android:layout_height="117dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/colorAccent"
         android:fontFamily="@font/aldrich"
         android:onClick="activateLocation"
         android:text="@string/ActivateLocation"
-        android:textColor="@color/colorPrimary"
-        android:textColorLink="@color/colorAccent"
+        android:textColor="?attr/primaryTextColor"
+        android:background="?attr/primaryBackgroundColor"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TestActivity : AppCompatActivity(), OnMapReadyCallback {
+class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -69,9 +69,14 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
         mMap = googleMap
-        mMap.setMapStyle(style)
+
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val darkThemeOn = sharedPref.getBoolean("dark_theme", true)
+        if (darkThemeOn){
+            val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
+            mMap.setMapStyle(style)
+        }
         isMapReady = true
         startTest()
     }

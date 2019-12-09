@@ -13,7 +13,7 @@ import com.lasockiquenon.coopertest.utils.LocationHandler
 import kotlinx.android.synthetic.main.activity_location.*
 
 
-class LocationActivity : AppCompatActivity() {
+class LocationActivity : BaseThemedActivity() {
 
     private val PERMISSION_ID = 42
 

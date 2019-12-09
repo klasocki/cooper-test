@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="?attr/primaryBackgroundColor"
     tools:context=".ResultActivity">
 
     <TableLayout
@@ -29,11 +29,11 @@
                 android:id="@+id/headerDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="?attr/accentBackgroundColor"
                 android:padding="18dip"
                 android:text="@string/date"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="15dp"
                 tools:ignore="SpUsage" />
 
@@ -42,11 +42,11 @@
                 android:id="@+id/AvgSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="?attr/accentBackgroundColor"
                 android:padding="18dip"
                 android:text="@string/avg_speed"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="15dp"
                 tools:ignore="SpUsage" />
 
@@ -55,11 +55,11 @@
                 android:id="@+id/Meters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="?attr/accentBackgroundColor"
                 android:padding="18dip"
                 android:text="@string/distance"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="15dp"
                 tools:ignore="SpUsage" />
 
@@ -68,11 +68,11 @@
                 android:id="@+id/Result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="?attr/accentBackgroundColor"
                 android:padding="18dip"
                 android:text="@string/result"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="15dp"
                 tools:ignore="SpUsage" />
 

@@ -1,20 +1,20 @@
 package com.lasockiquenon.coopertest
 
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
-import java.util.ArrayList
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.preference.PreferenceManager
 import com.lasockiquenon.coopertest.utils.Results
 import com.lasockiquenon.coopertest.utils.Storage
+import java.util.*
 
 
-class ResultActivity : AppCompatActivity() {
+class ResultActivity : BaseThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +73,10 @@ class ResultActivity : AppCompatActivity() {
 
     private fun newTextView(): TextView {
         val textview = TextView(this)
-        if(Build.VERSION.SDK_INT >= 23){
-            textview.setTextColor(getColor(R.color.colorPrimary))
-        } else {
-            textview.setTextColor(resources.getColor(R.color.colorPrimary))
-        }
+        val typedValue = TypedValue()
+        theme.resolveAttribute(R.attr.primaryTextColor, typedValue, true)
+        @ColorInt val color = typedValue.data
+        textview.setTextColor(color)
         return textview
     }
 
@@ -97,9 +96,9 @@ class ResultActivity : AppCompatActivity() {
             PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
         return if (!miles) {
-            "%.0f m".format(meter)
+            "%.0fm".format(meter)
         } else {
-            "%.0f yd".format(meter * 1.094)
+            "%.0fyd".format(meter * 1.094)
         }
     }
 
@@ -108,9 +107,9 @@ class ResultActivity : AppCompatActivity() {
             PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
         return if (!miles) {
-            "%.1f km/h".format(speed * 3.6)
+            "%.1fkm/h".format(speed * 3.6)
         } else {
-            "%.1f mph".format(speed * 2.23694)
+            "%.1fmph".format(speed * 2.23694)
         }
     }
 
