@@ -3,7 +3,9 @@ package com.lasockiquenon.coopertest.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import android.text.TextUtils.split
 import androidx.preference.PreferenceManager
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.Expose
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -11,19 +13,25 @@ import java.util.*
 
 class Results(
     meters: Double, routePoints: List<Location>, avgSpeed: Double,
-    private val context: Context, private var athlete: Boolean = false
+    context: Context, private var athlete: Boolean = false
 ) {
 
     @Expose
     private var meters: Double = 0.0
     private var age: Int = 0
+    @Expose
+    private var name: String = ""
     private var gender: String = ""
     @Expose
     private var level: String = ""
-    private var previousStep: Int? = null
-    private var nextStep: Int? = null
     @Expose
+    private var previousStep: Int = 0
+    @Expose
+    private var nextStep: Int = 0
     private var routePoints: List<Location> = emptyList()
+    private var routePointsLatLong: List<LatLng> = emptyList()
+    @Expose
+    private var routePointsString : String = ""
     @Expose
     private var date: Date = Date()
     @Expose
@@ -32,12 +40,14 @@ class Results(
     init {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
         val dateBirthday = mSharedPreference.getString("birthday", "null")
+        name = mSharedPreference.getString("name", "null").toString()
         age = getAge(dateBirthday.toString())
         this.meters = meters
         athlete = mSharedPreference.getBoolean("athlete", false)
         gender = mSharedPreference.getString("gender", "Male")!!
-        level = setResultTest()
+        setResultTest()
         this.routePoints = routePoints
+        convertLocationAndString()
         this.avgSpeed = avgSpeed
     }
 
@@ -68,7 +78,7 @@ class Results(
         return age
     }
 
-    fun setResultTest(): String {
+    fun setResultTest() {
         if (athlete) {
             if (gender == "Male") {
                 when {
@@ -95,7 +105,7 @@ class Results(
                     meters >= 3700 -> {
                         level = "Very good"
                         previousStep = 3700
-                        nextStep = null
+                        nextStep = 0
                     }
                 }
             } else {
@@ -123,7 +133,7 @@ class Results(
                     meters >= 3000 -> {
                         level = "Very good"
                         previousStep = 3000
-                        nextStep = null
+                        nextStep = 0
                     }
                 }
 
@@ -156,7 +166,7 @@ class Results(
                             meters >= 2700 -> {
                                 level = "Very good"
                                 previousStep = 2700
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -184,7 +194,7 @@ class Results(
                             meters >= 2000 -> {
                                 level = "Very good"
                                 previousStep = 2000
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -215,7 +225,7 @@ class Results(
                             meters >= 2800 -> {
                                 level = "Very good"
                                 previousStep = 2800
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -243,7 +253,7 @@ class Results(
                             meters >= 2100 -> {
                                 level = "Very good"
                                 previousStep = 2100
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -274,7 +284,7 @@ class Results(
                             meters >= 3000 -> {
                                 level = "Very good"
                                 previousStep = 3000
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -302,7 +312,7 @@ class Results(
                             meters >= 2300 -> {
                                 level = "Very good"
                                 previousStep = 2300
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -333,7 +343,7 @@ class Results(
                             meters >= 2800 -> {
                                 level = "Very good"
                                 previousStep = 2800
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -361,7 +371,7 @@ class Results(
                             meters >= 2700 -> {
                                 level = "Very good"
                                 previousStep = 2700
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -392,7 +402,7 @@ class Results(
                             meters >= 2700 -> {
                                 level = "Very good"
                                 previousStep = 2700
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -420,7 +430,7 @@ class Results(
                             meters >= 2500 -> {
                                 level = "Very good"
                                 previousStep = 2500
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -451,7 +461,7 @@ class Results(
                             meters >= 2500 -> {
                                 level = "Very good"
                                 previousStep = 2500
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -479,7 +489,7 @@ class Results(
                             meters >= 2300 -> {
                                 level = "Very good"
                                 previousStep = 2300
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -508,7 +518,7 @@ class Results(
                             meters >= 2400 -> {
                                 level = "Very good"
                                 previousStep = 2400
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     } else {
@@ -536,7 +546,7 @@ class Results(
                             meters >= 2200 -> {
                                 level = "Very good"
                                 previousStep = 2200
-                                nextStep = null
+                                nextStep = 0
                             }
                         }
                     }
@@ -544,15 +554,22 @@ class Results(
             }
 
         }
-        return if (nextStep != null) {
-            level + " (" + formatMeters(previousStep!!) + "-" + formatMeters(nextStep!!) + ")"
-        } else {
-            level + " ( >" + formatMeters(previousStep!!) + ")"
-        }
     }
 
     fun getLevel(): String {
         return level
+    }
+
+    fun getRange(context: Context) : String {
+        val range: String
+        if (nextStep == 0) {
+            range = " ( >" + formatMeters(previousStep,context) + ")"
+        } else if (previousStep == 0){
+            range = " ( <" + formatMeters(nextStep,context) + ")"
+        } else{
+            range = " ("+formatMeters(nextStep,context) + "-" + formatMeters(nextStep,context) + ")"
+        }
+        return range
     }
 
     fun getMeters(): Double {
@@ -567,7 +584,15 @@ class Results(
         return avgSpeed
     }
 
-    private fun formatMeters(meters: Int): String {
+    fun getRoutePointsLatLong() : List<LatLng>{
+        return routePointsLatLong
+    }
+
+    fun getName() : String{
+        return name
+    }
+
+    private fun formatMeters(meters: Int, context:Context): String {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
         val miles = mSharedPreference.getBoolean("miles", false)
         if (!miles) {
@@ -576,6 +601,25 @@ class Results(
             return "%.0fyd".format(meters * 1.09361)
         }
     }
+
+    internal fun convertLocationAndString(){
+        if (routePointsString=="") {
+            for (points in routePoints) {
+                routePointsString += points.latitude.toString() + "/" + points.longitude.toString() + "!"
+            }
+        } else if (routePointsLatLong.isNullOrEmpty()) {
+            routePointsLatLong = emptyList()
+            val points = split(routePointsString, "!")
+            for (point in points) {
+                if (point.contains("/")) {
+                    val pointSplited = split(point, "/")
+                    routePointsLatLong = routePointsLatLong + LatLng(pointSplited[0].toDouble(), pointSplited[1].toDouble())
+                }
+            }
+        }
+    }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.lasockiquenon.coopertest
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -32,10 +33,10 @@ class ResultActivity : AppCompatActivity() {
             for (i in listOfResults) {
 
                 val newRow = TableRow(this)
-                //val myPlaceInList= placeInList
+                val myPlaceInList= placeInList
 
                 var textview = newTextView()
-                val stringDate = android.text.format.DateFormat.format("dd-MM-yyyy", i.getDate())
+                val stringDate = android.text.format.DateFormat.format("yyyy-MM-dd", i.getDate())
                 textview.text = stringDate
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
@@ -51,17 +52,16 @@ class ResultActivity : AppCompatActivity() {
                 newRow.addView(textview)
 
                 textview = newTextView()
-                textview.text = i.getLevel().split("(")[0]
+                textview.text = i.getLevel()
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
-
-                /*newRow.setClickable(true)
+                newRow.setClickable(true)
                 newRow.setOnClickListener{
                     val intent = Intent(this, TestActivity::class.java)
                     intent.putExtra("Results", myPlaceInList)
                     startActivity(intent)
-                }*/
+                }
 
 
 

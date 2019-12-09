@@ -54,11 +54,11 @@
 
     <TextView
         android:id="@+id/timerView"
-        android:layout_width="227dp"
+        android:layout_width="260dp"
         android:layout_height="57dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/aldrich"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -111,6 +111,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map"
         tools:text="Good" />
+
+    <TextView
+        android:id="@+id/rangeTextView"
+        android:layout_width="257dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="168dp"
+        android:fontFamily="@font/aldrich"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map"
+        tools:text="(2000yd-2100yd)" />
 
     <TextView
         android:id="@+id/labelAvgSpeed"
