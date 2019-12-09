@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import androidx.preference.PreferenceManager
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.Expose
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -26,8 +25,6 @@ class Results(
     @Expose
     private var routePoints: List<Location> = emptyList()
     @Expose
-    private var test: List<LatLng> = emptyList()
-    @Expose
     private var date: Date = Date()
     @Expose
     private var avgSpeed: Double = 0.0
@@ -41,7 +38,6 @@ class Results(
         gender = mSharedPreference.getString("gender", "Male")!!
         level = setResultTest()
         this.routePoints = routePoints
-        this.test += LatLng(routePoints.get(0).latitude, routePoints.get(0).longitude)
         this.avgSpeed = avgSpeed
     }
 
