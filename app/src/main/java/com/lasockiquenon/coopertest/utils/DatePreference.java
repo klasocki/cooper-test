@@ -1,4 +1,4 @@
-package com.example.coopertest;
+package com.lasockiquenon.coopertest.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 //import com.example.coopertest.util.timereminder.R;
 
 import androidx.preference.DialogPreference;
+
+import com.lasockiquenon.coopertest.R;
 
 /**
  * A dialog preference that shown calendar in the dialog.

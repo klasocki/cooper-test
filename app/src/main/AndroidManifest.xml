@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.coopertest">
+    package="com.lasockiquenon.coopertest">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -22,25 +22,25 @@
         tools:ignore="GoogleAppIndexingWarning"
         android:fullBackupContent="true">
         <activity
-            android:name=".InfoActivity"
+            android:name="com.lasockiquenon.coopertest.InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ResultActivity"
+        <activity android:name="com.lasockiquenon.coopertest.ResultActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".TestActivity"
+            android:name="com.lasockiquenon.coopertest.TestActivity"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LocationActivity"
+            android:name="com.lasockiquenon.coopertest.LocationActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.lasockiquenon.coopertest.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar"/>
          <activity
-            android:name=".MainActivity"
+            android:name="com.lasockiquenon.coopertest.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".LocationService" />
+        <service android:name="com.lasockiquenon.coopertest.LocationService" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

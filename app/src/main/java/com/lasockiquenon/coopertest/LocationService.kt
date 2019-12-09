@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.app.*
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.lasockiquenon.coopertest.utils.LocationHandler
 import com.google.android.gms.location.*
 
 

@@ -31,7 +31,7 @@
             app:title="@string/NameParameter"
             app:useSimpleSummaryProvider="true" />
 
-        <com.example.coopertest.DatePreference
+        <com.lasockiquenon.coopertest.utils.DatePreference
             app:key="birthday"
             app:title="@string/BirthdayParameter" />
 

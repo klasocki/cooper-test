@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -10,17 +10,17 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.preference.PreferenceManager
+import com.lasockiquenon.coopertest.utils.Results
+import com.lasockiquenon.coopertest.utils.Storage
 
 
 class ResultActivity : AppCompatActivity() {
-
-    private val objectContext: App = App(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setTitle("Results")
+        supportActionBar?.title = "Results"
         val listOfResults = Storage().loadResults(this)
         fillTable(listOfResults)
     }
@@ -94,7 +94,7 @@ class ResultActivity : AppCompatActivity() {
 
     private fun formatDistance(meter: Double): String {
         val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+            PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
         return if (!miles) {
             "%.0f m".format(meter)
@@ -105,7 +105,7 @@ class ResultActivity : AppCompatActivity() {
 
     private fun formatSpeed(speed: Double): String {
         val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+            PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
         return if (!miles) {
             "%.1f km/h".format(speed * 3.6)

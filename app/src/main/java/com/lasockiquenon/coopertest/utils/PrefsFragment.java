@@ -1,10 +1,9 @@
-package com.example.coopertest;
+package com.lasockiquenon.coopertest.utils;
 
 import android.os.Bundle;
 
 //import com.example.util.timereminder.R;
-import com.example.coopertest.DatePreferenceDialogFragment;
-import com.example.coopertest.DatePreference;
+import com.lasockiquenon.coopertest.R;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.EditTextPreference;
@@ -13,8 +12,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 

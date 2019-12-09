@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest.utils
 
 import android.content.Context
 

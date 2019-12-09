@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.app.AlertDialog
 import android.content.*
@@ -12,6 +12,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.lasockiquenon.coopertest.utils.AudioNotifier
+import com.lasockiquenon.coopertest.utils.Results
+import com.lasockiquenon.coopertest.utils.Storage
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,7 +40,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var startTimer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
-    private var avgSpeed : Double = 0.0
+    private var avgSpeed: Double = 0.0
 
     private val testLengthMinutes = 1
 
@@ -45,8 +48,6 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var locationService: LocationService
     private var isServiceBound = false
-
-    private val objectContext : App = App(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,19 +95,26 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
         timerView.text = getString(R.string.result)
 
-        if (completed && routePoints.count() > 0){
+        if (completed && routePoints.count() > 0) {
             val firstLocation = LatLng(routePoints.first().latitude, routePoints.first().longitude)
             val lastLocation = LatLng(routePoints.last().latitude, routePoints.last().longitude)
-            val middleLocation = LatLngBounds.builder().include(firstLocation).include(lastLocation).build().center
+            val middleLocation =
+                LatLngBounds.builder().include(firstLocation).include(lastLocation).build().center
             mMap.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(middleLocation.latitude, middleLocation.longitude), 12.5f
                 )
             )
-            val objectResult= Results(currentDistanceMeters, routePoints, avgSpeed, objectContext.getContext() )
-            val yourLevel= objectResult.getLevel()
-            resultTextView.text=yourLevel
-            Storage().addResult(objectContext.getContext(), objectResult)
+            val objectResult = Results(
+                currentDistanceMeters,
+                routePoints,
+                avgSpeed,
+                this
+            )
+            val yourLevel = objectResult.getLevel()
+            resultTextView.text = yourLevel
+            Storage()
+                .addResult(this, objectResult)
 
         }
 
@@ -200,8 +208,10 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             val binder = service as LocationService.LocalBinder
             locationService = binder.getService()
             isServiceBound = true
-            LocalBroadcastManager.getInstance(this@TestActivity).registerReceiver(locationReceiver,
-                IntentFilter(locationService.ACTION_BROADCAST))
+            LocalBroadcastManager.getInstance(this@TestActivity).registerReceiver(
+                locationReceiver,
+                IntentFilter(locationService.ACTION_BROADCAST)
+            )
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -236,23 +246,23 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun currentDistanceString(): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
         if (!miles) {
             return "%.0f m".format(currentDistanceMeters)
         } else {
-            return "%.0f yd".format(currentDistanceMeters*1.09361)
+            return "%.0f yd".format(currentDistanceMeters * 1.09361)
         }
     }
 
 
     private fun formatSpeed(speed: Float): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
         val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles){
-            return "%.1f km/h".format(speed*3.6)
+        if (!miles) {
+            return "%.1f km/h".format(speed * 3.6)
         } else {
-            return "%.1f mph".format(speed*2.23694)
+            return "%.1f mph".format(speed * 2.23694)
         }
     }
 

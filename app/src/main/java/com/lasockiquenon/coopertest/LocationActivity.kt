@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.Manifest
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.core.app.ActivityCompat
+import com.lasockiquenon.coopertest.utils.LocationHandler
 import kotlinx.android.synthetic.main.activity_location.*
 
 

@@ -1,4 +1,4 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.os.Build
 import android.os.Bundle

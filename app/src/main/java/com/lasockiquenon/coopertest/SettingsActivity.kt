@@ -1,9 +1,9 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.example.coopertest.PrefsFragment as PreferenceFragmentCompat
+import com.lasockiquenon.coopertest.utils.PrefsFragment as PreferenceFragmentCompat
 
 
 

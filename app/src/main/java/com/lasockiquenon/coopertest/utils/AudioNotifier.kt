@@ -1,10 +1,13 @@
-package com.example.coopertest
+package com.lasockiquenon.coopertest.utils
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.lasockiquenon.coopertest.R
 
 class AudioNotifier(private val context: Context) {
-    private var mediaPlayer = MediaPlayer.create(context, R.raw.left_10)
+    private var mediaPlayer = MediaPlayer.create(context,
+        R.raw.left_10
+    )
 
     fun notifyAboutTimeLeft(milisUntilFinished: Long) {
         val milisMod5sec = milisUntilFinished.toInt() % (5 * 1000)
