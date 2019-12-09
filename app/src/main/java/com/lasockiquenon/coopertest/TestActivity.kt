@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.location.Location
 import android.os.*
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.lasockiquenon.coopertest.utils.AudioNotifier
@@ -24,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.lasockiquenon.coopertest.utils.UnitsUtils
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,6 +45,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
     private val testLengthMinutes = 1
 
     private lateinit var notifier: AudioNotifier
+    private val unitsUtils = UnitsUtils(this)
 
     private lateinit var locationService: LocationService
     private var isServiceBound = false
@@ -73,7 +74,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val darkThemeOn = sharedPref.getBoolean("dark_theme", true)
-        if (darkThemeOn){
+        if (darkThemeOn) {
             val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
             mMap.setMapStyle(style)
         }
@@ -143,9 +144,14 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
         }
 
         currentSpeedView.text = when {
-            newLocation.hasSpeed() -> formatSpeed(newLocation.speed)
-            routePoints.count() > 0 -> formatSpeed(calculateSpeed(routePoints.last(), newLocation))
-            else -> formatSpeed(0.toFloat())
+            newLocation.hasSpeed() -> unitsUtils.formatSpeed(newLocation.speed)
+            routePoints.count() > 0 -> unitsUtils.formatSpeed(
+                unitsUtils.calculateSpeed(
+                    routePoints.last(),
+                    newLocation
+                )
+            )
+            else -> unitsUtils.formatSpeed(0.toFloat())
         }
 
         if (routePoints.count() > 0) {
@@ -157,10 +163,10 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
     private fun updateMapAndSpeed(newLocation: Location) {
         val distanceChange = newLocation.distanceTo(routePoints.last())
         currentDistanceMeters += distanceChange
-        currentDistanceTextView.text = currentDistanceString()
+        currentDistanceTextView.text = unitsUtils.formatDistance(currentDistanceMeters)
 
         avgSpeed = currentDistanceMeters * 1000 / (newLocation.time - routePoints.first().time)
-        avgSpeedView.text = formatSpeed(avgSpeed.toFloat())
+        avgSpeedView.text = unitsUtils.formatSpeed(avgSpeed.toFloat())
 
         val options = PolylineOptions()
         options.color(Color.RED)
@@ -247,32 +253,6 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback {
             }
             .setNegativeButton(R.string.ConfirmExitRefuse, null)
             .show()
-    }
-
-
-    private fun currentDistanceString(): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles) {
-            return "%.0f m".format(currentDistanceMeters)
-        } else {
-            return "%.0f yd".format(currentDistanceMeters * 1.09361)
-        }
-    }
-
-
-    private fun formatSpeed(speed: Float): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles) {
-            return "%.1f km/h".format(speed * 3.6)
-        } else {
-            return "%.1f mph".format(speed * 2.23694)
-        }
-    }
-
-    private fun calculateSpeed(start: Location, end: Location): Float {
-        return (end.distanceTo(start) * 1000 / (end.time - start.time))
     }
 
 }

@@ -8,13 +8,14 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.preference.PreferenceManager
 import com.lasockiquenon.coopertest.utils.Results
+import com.lasockiquenon.coopertest.utils.UnitsUtils
 import com.lasockiquenon.coopertest.utils.Storage
 import java.util.*
 
 
 class ResultActivity : BaseThemedActivity() {
+    private val unitsUtils = UnitsUtils(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +42,12 @@ class ResultActivity : BaseThemedActivity() {
                 newRow.addView(textview)
 
                 textview = newTextView()
-                textview.text = formatSpeed(i.getAvgSpeed())
+                textview.text = unitsUtils.formatSpeed(i.getAvgSpeed().toFloat())
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
                 textview = newTextView()
-                textview.text = formatDistance(i.getMeters())
+                textview.text = unitsUtils.formatDistance(i.getMeters())
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
@@ -90,28 +91,4 @@ class ResultActivity : BaseThemedActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun formatDistance(meter: Double): String {
-        val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        return if (!miles) {
-            "%.0fm".format(meter)
-        } else {
-            "%.0fyd".format(meter * 1.094)
-        }
-    }
-
-    private fun formatSpeed(speed: Double): String {
-        val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        return if (!miles) {
-            "%.1fkm/h".format(speed * 3.6)
-        } else {
-            "%.1fmph".format(speed * 2.23694)
-        }
-    }
-
-
 }
