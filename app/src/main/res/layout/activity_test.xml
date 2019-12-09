@@ -10,38 +10,36 @@
 
     <TextView
         android:id="@+id/avgSpeedView"
-        android:layout_width="105dp"
-        android:layout_height="26dp"
+        android:layout_width="125dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/aldrich"
-        android:text="@string/initial_speed"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.761"
+        app:layout_constraintHorizontal_bias="0.779"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelAvgSpeed"
-        tools:text="4.0 m/s" />
+        tools:text="15.2 km/h" />
 
     <TextView
         android:id="@+id/currentSpeedView"
-        android:layout_width="103dp"
-        android:layout_height="26dp"
+        android:layout_width="125dp"
+        android:layout_height="31dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/aldrich"
-        android:text="@string/initial_speed"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.242"
+        app:layout_constraintHorizontal_bias="0.241"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelCurrSpeed"
-        tools:text="5.6 m/s" />
+        tools:text="12.3 km/h" />
 
     <fragment
         android:id="@+id/map"
@@ -98,6 +96,21 @@
         app:layout_constraintHorizontal_bias="0.243"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
+
+    <TextView
+        android:id="@+id/resultTextView"
+        android:layout_width="190dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="120dp"
+        android:fontFamily="@font/aldrich"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map"
+        tools:text="Good" />
 
     <TextView
         android:id="@+id/labelAvgSpeed"

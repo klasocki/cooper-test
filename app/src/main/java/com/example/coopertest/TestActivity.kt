@@ -2,11 +2,15 @@ package com.example.coopertest
 
 import android.app.AlertDialog
 import android.content.*
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.*
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -33,6 +37,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var startTimer: CountDownTimer
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
+    private var avgSpeed : Double = 0.0
 
     private val testLengthMinutes = 1
 
@@ -40,6 +45,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var locationService: LocationService
     private var isServiceBound = false
+
+    private val objectContext : App = App(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +86,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         notifier.playTestStartFile()
     }
 
-    private fun finishTest() {
+    private fun finishTest(completed: Boolean) {
         unbindService(serviceConnection)
         val intent = Intent(this, LocationService::class.java)
         stopService(intent)
@@ -87,7 +94,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
         timerView.text = getString(R.string.result)
 
-        if (routePoints.count() > 0){
+        if (completed && routePoints.count() > 0){
             val firstLocation = LatLng(routePoints.first().latitude, routePoints.first().longitude)
             val lastLocation = LatLng(routePoints.last().latitude, routePoints.last().longitude)
             val middleLocation = LatLngBounds.builder().include(firstLocation).include(lastLocation).build().center
@@ -96,6 +103,11 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
                     LatLng(middleLocation.latitude, middleLocation.longitude), 12.5f
                 )
             )
+            val objectResult= Results(currentDistanceMeters, routePoints, avgSpeed, objectContext.getContext() )
+            val yourLevel= objectResult.getLevel()
+            resultTextView.text=yourLevel
+            Storage().addResult(objectContext.getContext(), objectResult)
+
         }
 
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -134,9 +146,8 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
         currentDistanceMeters += distanceChange
         currentDistanceTextView.text = currentDistanceString()
 
-        val avgSpeedSoFar =
-            currentDistanceMeters * 1000 / (newLocation.time - routePoints.first().time)
-        avgSpeedView.text = formatSpeed(avgSpeedSoFar.toFloat())
+        avgSpeed = currentDistanceMeters * 1000 / (newLocation.time - routePoints.first().time)
+        avgSpeedView.text = formatSpeed(avgSpeed.toFloat())
 
         val options = PolylineOptions()
         options.color(Color.RED)
@@ -147,7 +158,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getTestTimer(): CountDownTimer {
-        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = { finishTest() },
+        return getTimer(testLengthMinutes * 60 * 1000, onFinishFun = { finishTest(true) },
             onTickFun = {
                 notifier.notifyAboutTimeLeft(it)
             })
@@ -170,6 +181,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
     ): CountDownTimer {
         return object : CountDownTimer((length).toLong(), 100) {
 
+            @SuppressLint("SimpleDateFormat")
             override fun onTick(millisUntilFinished: Long) {
                 timerView.text = SimpleDateFormat("mm:ss.S").format(
                     Date(millisUntilFinished)
@@ -211,7 +223,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
             .setMessage(R.string.ConfirmExitMessage)
             .setCancelable(false)
             .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
-                finishTest()
+                finishTest(false)
                 startTimer.cancel()
                 testTimer.cancel()
                 notifier.stop()
@@ -224,12 +236,24 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun currentDistanceString(): String {
-        return "%.0fm".format(currentDistanceMeters)
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val miles = mSharedPreference.getBoolean("miles", false)
+        if (!miles) {
+            return "%.0f m".format(currentDistanceMeters)
+        } else {
+            return "%.0f yd".format(currentDistanceMeters*1.09361)
+        }
     }
 
 
     private fun formatSpeed(speed: Float): String {
-        return "%.1f m/s".format(speed)
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(objectContext.getContext())
+        val miles = mSharedPreference.getBoolean("miles", false)
+        if (!miles){
+            return "%.1f km/h".format(speed*3.6)
+        } else {
+            return "%.1f mph".format(speed*2.23694)
+        }
     }
 
     private fun calculateSpeed(start: Location, end: Location): Float {
