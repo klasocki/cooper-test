@@ -10,8 +10,8 @@
 
     <TextView
         android:id="@+id/avgSpeedView"
-        android:layout_width="125dp"
-        android:layout_height="32dp"
+        android:layout_width="155dp"
+        android:layout_height="37dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/aldrich"
         android:textAlignment="center"
@@ -19,15 +19,15 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.779"
+        app:layout_constraintHorizontal_bias="0.82"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelAvgSpeed"
         tools:text="15.2 km/h" />
 
     <TextView
         android:id="@+id/currentSpeedView"
-        android:layout_width="125dp"
-        android:layout_height="31dp"
+        android:layout_width="157dp"
+        android:layout_height="36dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/aldrich"
         android:textAlignment="center"
@@ -36,7 +36,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.241"
+        app:layout_constraintHorizontal_bias="0.177"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelCurrSpeed"
         tools:text="12.3 km/h" />
@@ -90,6 +90,7 @@
         android:layout_marginTop="24dp"
         android:fontFamily="@font/aldrich"
         android:text="@string/curr_speed_label"
+        android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,6 +136,7 @@
         android:layout_marginTop="24dp"
         android:fontFamily="@font/aldrich"
         android:text="@string/avg_speed_label"
+        android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
