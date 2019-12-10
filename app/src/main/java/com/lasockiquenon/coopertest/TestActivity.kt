@@ -22,12 +22,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.lasockiquenon.coopertest.utils.UnitsUtils
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
+class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
 
     private lateinit var mMap: GoogleMap
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -43,6 +44,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
     private val testLengthMinutes = 1
 
     private lateinit var notifier: AudioNotifier
+    private val unitsUtils = UnitsUtils(this)
 
     private lateinit var locationService: LocationService
     private var isServiceBound = false
@@ -56,15 +58,15 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        printResultNumber= getIntent().getIntExtra("Results", -1)
+        printResultNumber = getIntent().getIntExtra("Results", -1)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        if (printResultNumber!=-1){
-            onlyShowingResultsNoTest=true
+        if (printResultNumber != -1) {
+            onlyShowingResultsNoTest = true
             printResult()
-        }else {
+        } else {
 
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             notifier = AudioNotifier(this)
@@ -74,14 +76,19 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
             val intent = Intent(this, LocationService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             startService(intent)
-        }
 
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
         mMap = googleMap
-        mMap.setMapStyle(style)
+
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val darkThemeOn = sharedPref.getBoolean("dark_theme", true)
+        if (darkThemeOn) {
+            val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
+            mMap.setMapStyle(style)
+        }
         isMapReady = true
         if (onlyShowingResultsNoTest==true) {
             printResultMap()
@@ -119,6 +126,7 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
         }
         val intent = Intent(this, LocationService::class.java)
         stopService(intent)
+        isServiceBound = false
 
         timerView.text = getString(R.string.result)
 
@@ -165,9 +173,14 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
         }
 
         currentSpeedView.text = when {
-            newLocation.hasSpeed() -> formatSpeed(newLocation.speed)
-            routePoints.count() > 0 -> formatSpeed(calculateSpeed(routePoints.last(), newLocation))
-            else -> formatSpeed(0.toFloat())
+            newLocation.hasSpeed() -> unitsUtils.formatSpeed(newLocation.speed)
+            routePoints.count() > 0 -> unitsUtils.formatSpeed(
+                unitsUtils.calculateSpeed(
+                    routePoints.last(),
+                    newLocation
+                )
+            )
+            else -> unitsUtils.formatSpeed(0.toFloat())
         }
 
         if (routePoints.count() > 0) {
@@ -179,10 +192,10 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
     private fun updateMapAndSpeed(newLocation: Location) {
         val distanceChange = newLocation.distanceTo(routePoints.last())
         currentDistanceMeters += distanceChange
-        currentDistanceTextView.text = formatDistance(currentDistanceMeters)
+        currentDistanceTextView.text = unitsUtils.formatDistance(currentDistanceMeters)
 
         avgSpeed = currentDistanceMeters * 1000 / (newLocation.time - routePoints.first().time)
-        avgSpeedView.text = formatSpeed(avgSpeed.toFloat())
+        avgSpeedView.text = unitsUtils.formatSpeed(avgSpeed.toFloat())
 
         val lastPoint = LatLng(routePoints.last().latitude, routePoints.last().longitude)
         val newPoint= LatLng(newLocation.latitude, newLocation.longitude)
@@ -262,58 +275,35 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
     }
 
     override fun onBackPressed() {
-        if (isTestRunning) {
-            AlertDialog.Builder(this)
-                .setMessage(R.string.ConfirmExitMessage)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
-                    finishTest(false)
-                    startTimer.cancel()
-                    testTimer.cancel()
-                    notifier.stop()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
-                .setNegativeButton(R.string.ConfirmExitRefuse, null)
-                .show()
-        } else if (onlyShowingResultsNoTest){
-            val intent = Intent(this, ResultActivity::class.java)
-            startActivity(intent)
-        } else{
-            if (isServiceBound){
-                unbindService(serviceConnection)
-                isServiceBound=false
+        when {
+            isTestRunning -> {
+                AlertDialog.Builder(this)
+                    .setMessage(R.string.ConfirmExitMessage)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ConfirmExitAccept) { _: DialogInterface, _: Int ->
+                        finishTest(false)
+                        startTimer.cancel()
+                        testTimer.cancel()
+                        notifier.stop()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(R.string.ConfirmExitRefuse, null)
+                    .show()
             }
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            onlyShowingResultsNoTest -> {
+                val intent = Intent(this, ResultActivity::class.java)
+                startActivity(intent)
+            }
+            else -> {
+                if (isServiceBound){
+                    unbindService(serviceConnection)
+                    isServiceBound=false
+                }
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
-    }
-
-
-
-    private fun formatDistance(distance : Double): String{
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles) {
-            return "%.0f m".format(distance)
-        } else {
-            return "%.0f yd".format(distance * 1.09361)
-        }
-    }
-
-
-    private fun formatSpeed(speed: Float): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles) {
-            return "%.1f km/h".format(speed * 3.6)
-        } else {
-            return "%.1f mph".format(speed * 2.23694)
-        }
-    }
-
-    private fun calculateSpeed(start: Location, end: Location): Float {
-        return (end.distanceTo(start) * 1000 / (end.time - start.time))
     }
 
     private fun printResult(){
@@ -321,10 +311,10 @@ class TestActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLoa
         val myResult= listOfResults!!.get(printResultNumber)
 
         timerView.text=myResult.getName()
-        currentDistanceTextView.text=formatDistance(myResult.getMeters())
+        currentDistanceTextView.text=unitsUtils.formatDistance(myResult.getMeters())
         labelCurrSpeed.text=getString(R.string.LabelDateResult)
         currentSpeedView.text=android.text.format.DateFormat.format("yyyy-MM-dd", myResult.getDate())
-        avgSpeedView.text=formatSpeed(myResult.getAvgSpeed().toFloat())
+        avgSpeedView.text=unitsUtils.formatSpeed(myResult.getAvgSpeed().toFloat())
         resultTextView.text=myResult.getLevel()
         rangeTextView.text=myResult.getRange(this)
         myResult.convertLocationAndString()

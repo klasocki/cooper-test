@@ -14,36 +14,28 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:fullBackupContent="true">
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name="com.lasockiquenon.coopertest.InfoActivity"
-            android:label="@string/title_activity_info"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.lasockiquenon.coopertest.ResultActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="@string/title_activity_info" />
+        <activity android:name="com.lasockiquenon.coopertest.ResultActivity" />
         <activity
             android:name="com.lasockiquenon.coopertest.TestActivity"
             android:screenOrientation="portrait"
-            android:showOnLockScreen="true"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.lasockiquenon.coopertest.LocationActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:showOnLockScreen="true" />
+        <activity android:name="com.lasockiquenon.coopertest.LocationActivity" />
         <activity
             android:name="com.lasockiquenon.coopertest.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar"/>
-         <activity
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name="com.lasockiquenon.coopertest.MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

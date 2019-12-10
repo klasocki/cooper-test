@@ -7,7 +7,7 @@ import android.text.Html.FROM_HTML_MODE_LEGACY
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.content_info.*
 
-class InfoActivity : AppCompatActivity() {
+class InfoActivity : BaseThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

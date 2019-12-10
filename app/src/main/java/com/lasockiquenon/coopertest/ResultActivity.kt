@@ -2,20 +2,22 @@ package com.lasockiquenon.coopertest
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
-import java.util.ArrayList
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.preference.PreferenceManager
+import androidx.annotation.ColorInt
 import com.lasockiquenon.coopertest.utils.Results
+import com.lasockiquenon.coopertest.utils.UnitsUtils
 import com.lasockiquenon.coopertest.utils.Storage
+import java.util.*
 
 
-class ResultActivity : AppCompatActivity() {
+class ResultActivity : BaseThemedActivity() {
+    private val unitsUtils = UnitsUtils(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +44,12 @@ class ResultActivity : AppCompatActivity() {
                 newRow.addView(textview)
 
                 textview = newTextView()
-                textview.text = formatSpeed(i.getAvgSpeed())
+                textview.text = unitsUtils.formatSpeed(i.getAvgSpeed().toFloat())
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
                 textview = newTextView()
-                textview.text = formatDistance(i.getMeters())
+                textview.text = unitsUtils.formatDistance(i.getMeters())
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
@@ -73,11 +75,10 @@ class ResultActivity : AppCompatActivity() {
 
     private fun newTextView(): TextView {
         val textview = TextView(this)
-        if(Build.VERSION.SDK_INT >= 23){
-            textview.setTextColor(getColor(R.color.colorPrimary))
-        } else {
-            textview.setTextColor(resources.getColor(R.color.colorPrimary))
-        }
+        val typedValue = TypedValue()
+        theme.resolveAttribute(R.attr.primaryTextColor, typedValue, true)
+        @ColorInt val color = typedValue.data
+        textview.setTextColor(color)
         return textview
     }
 
@@ -91,33 +92,4 @@ class ResultActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun formatDistance(meter: Double): String {
-        val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        return if (!miles) {
-            "%.0f m".format(meter)
-        } else {
-            "%.0f yd".format(meter * 1.094)
-        }
-    }
-
-    private fun formatSpeed(speed: Double): String {
-        val mSharedPreference =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        return if (!miles) {
-            "%.1f km/h".format(speed * 3.6)
-        } else {
-            "%.1f mph".format(speed * 2.23694)
-        }
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-    }
-
-
 }

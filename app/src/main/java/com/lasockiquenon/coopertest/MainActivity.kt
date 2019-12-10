@@ -5,13 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.lasockiquenon.coopertest.utils.LocationHandler
 
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : BaseThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

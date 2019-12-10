@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Personal information">
 
@@ -44,10 +45,16 @@
     <PreferenceCategory app:title="Units">
 
         <SwitchPreferenceCompat
-            app:key="miles"
-            app:title="Replace meters by miles" />
-
+            app:key="use_imperial"
+            app:title="Use imperial units" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory app:title="Theme">
+        <SwitchPreferenceCompat
+            app:key="dark_theme"
+            app:title="Dark theme on" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>
