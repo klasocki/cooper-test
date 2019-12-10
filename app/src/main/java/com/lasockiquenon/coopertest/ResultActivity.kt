@@ -1,7 +1,6 @@
 package com.lasockiquenon.coopertest
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -58,7 +57,7 @@ class ResultActivity : BaseThemedActivity() {
                 textview.gravity = Gravity.CENTER_HORIZONTAL
                 newRow.addView(textview)
 
-                newRow.setClickable(true)
+                newRow.isClickable = true
                 newRow.setOnClickListener{
                     val intent = Intent(this, TestActivity::class.java)
                     intent.putExtra("Results", myPlaceInList)
@@ -74,12 +73,12 @@ class ResultActivity : BaseThemedActivity() {
     }
 
     private fun newTextView(): TextView {
-        val textview = TextView(this)
+        val textView = TextView(this)
         val typedValue = TypedValue()
         theme.resolveAttribute(R.attr.primaryTextColor, typedValue, true)
         @ColorInt val color = typedValue.data
-        textview.setTextColor(color)
-        return textview
+        textView.setTextColor(color)
+        return textView
     }
 
 
@@ -91,5 +90,10 @@ class ResultActivity : BaseThemedActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }

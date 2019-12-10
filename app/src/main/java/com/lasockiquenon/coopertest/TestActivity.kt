@@ -8,9 +8,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.*
+import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.lasockiquenon.coopertest.utils.AudioNotifier
@@ -31,7 +30,7 @@ import java.util.*
 class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
 
     private lateinit var mMap: GoogleMap
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var isMapReady: Boolean = false
     private var testStarted: Boolean = false
 
@@ -50,15 +49,15 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var isServiceBound = false
     private var isTestRunning = false
 
-    private var printResultNumber : Int =-1
-    private var onlyShowingResultsNoTest : Boolean = false
-    private var routePointsLatLng : List<LatLng> = emptyList()
-    var cameraUpdate : CameraUpdate? = null
+    private var printResultNumber: Int = -1
+    private var onlyShowingResultsNoTest: Boolean = false
+    private var routePointsLatLng: List<LatLng> = emptyList()
+    var cameraUpdate: CameraUpdate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        printResultNumber = getIntent().getIntExtra("Results", -1)
+        printResultNumber = intent.getIntExtra("Results", -1)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -76,38 +75,35 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             val intent = Intent(this, LocationService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             startService(intent)
-
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val darkThemeOn = sharedPref.getBoolean("dark_theme", true)
-        if (darkThemeOn) {
+        if (super.isDarkThemeOn) {
             val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night)
             mMap.setMapStyle(style)
         }
         isMapReady = true
-        if (onlyShowingResultsNoTest==true) {
+        if (onlyShowingResultsNoTest) {
             printResultMap()
-        } else{
+        } else {
             startTest()
         }
     }
 
 
     override fun onMapLoaded() {
-        if (onlyShowingResultsNoTest==true) {
-            if (cameraUpdate!=null) {
+        if (onlyShowingResultsNoTest) {
+            if (cameraUpdate != null) {
                 mMap.animateCamera(cameraUpdate)
             }
         }
     }
 
     private fun startTest() {
-        isTestRunning=true
+        isTestRunning = true
         startTimer.start()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (Build.VERSION.SDK_INT >= 27) {
@@ -119,7 +115,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     }
 
     private fun finishTest(completed: Boolean) {
-        isTestRunning=false
+        isTestRunning = false
         if (isServiceBound) {
             unbindService(serviceConnection)
             isServiceBound = false
@@ -131,11 +127,11 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         timerView.text = getString(R.string.result)
 
         if (completed && routePoints.count() > 0) {
-            val builder : LatLngBounds.Builder = LatLngBounds.Builder()
-            for (point in routePoints){
-                builder.include(LatLng(point.latitude,point.longitude))
+            val builder: LatLngBounds.Builder = LatLngBounds.Builder()
+            for (point in routePoints) {
+                builder.include(LatLng(point.latitude, point.longitude))
             }
-            val bounds : LatLngBounds = builder.build()
+            val bounds: LatLngBounds = builder.build()
             val padding = 50
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
             mMap.animateCamera(cameraUpdate)
@@ -147,9 +143,8 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
                 this
             )
             resultTextView.text = objectResult.getLevel()
-            rangeTextView.text= objectResult.getRange(this)
-            Storage()
-                .addResult(this, objectResult)
+            rangeTextView.text = objectResult.getRange(this)
+            Storage().addResult(this, objectResult)
 
         }
 
@@ -198,15 +193,15 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         avgSpeedView.text = unitsUtils.formatSpeed(avgSpeed.toFloat())
 
         val lastPoint = LatLng(routePoints.last().latitude, routePoints.last().longitude)
-        val newPoint= LatLng(newLocation.latitude, newLocation.longitude)
-        drawLineOnMap(lastPoint,newPoint)
+        val newPoint = LatLng(newLocation.latitude, newLocation.longitude)
+        drawLineOnMap(lastPoint, newPoint)
     }
 
-    private fun drawLineOnMap(firtPoint : LatLng,secondPoint : LatLng){
+    private fun drawLineOnMap(firstPoint: LatLng, secondPoint: LatLng) {
         val options = PolylineOptions()
         options.color(Color.RED)
         options.width(5f)
-        options.add(firtPoint)
+        options.add(firstPoint)
         options.add(secondPoint)
         mMap.addPolyline(options)
     }
@@ -296,9 +291,9 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
                 startActivity(intent)
             }
             else -> {
-                if (isServiceBound){
+                if (isServiceBound) {
                     unbindService(serviceConnection)
-                    isServiceBound=false
+                    isServiceBound = false
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
@@ -306,30 +301,32 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         }
     }
 
-    private fun printResult(){
+    private fun printResult() {
         val listOfResults = Storage().loadResults(this)
-        val myResult= listOfResults!!.get(printResultNumber)
+        val myResult = listOfResults!![printResultNumber]
 
-        timerView.text=myResult.getName()
-        currentDistanceTextView.text=unitsUtils.formatDistance(myResult.getMeters())
-        labelCurrSpeed.text=getString(R.string.LabelDateResult)
-        currentSpeedView.text=android.text.format.DateFormat.format("yyyy-MM-dd", myResult.getDate())
-        avgSpeedView.text=unitsUtils.formatSpeed(myResult.getAvgSpeed().toFloat())
-        resultTextView.text=myResult.getLevel()
-        rangeTextView.text=myResult.getRange(this)
+        timerView.text = myResult.getName()
+        timerView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        currentDistanceTextView.text = unitsUtils.formatDistance(myResult.getMeters())
+        labelCurrSpeed.text = getString(R.string.LabelDateResult)
+        currentSpeedView.text =
+            android.text.format.DateFormat.format("yyyy-MM-dd", myResult.getDate())
+        avgSpeedView.text = unitsUtils.formatSpeed(myResult.getAvgSpeed().toFloat())
+        resultTextView.text = myResult.getLevel()
+        rangeTextView.text = myResult.getRange(this)
         myResult.convertLocationAndString()
-        routePointsLatLng=myResult.getRoutePointsLatLong()
+        routePointsLatLng = myResult.getRoutePointsLatLong()
     }
 
-    private fun printResultMap(){
-        if (routePointsLatLng.isNotEmpty()){
-            val builder : LatLngBounds.Builder = LatLngBounds.Builder()
-            for (i in 0..routePointsLatLng.size-2){
-                drawLineOnMap(routePointsLatLng.get(i),routePointsLatLng.get(i+1))
-                builder.include(routePointsLatLng.get(i))
+    private fun printResultMap() {
+        if (routePointsLatLng.isNotEmpty()) {
+            val builder: LatLngBounds.Builder = LatLngBounds.Builder()
+            for (i in 0..routePointsLatLng.size - 2) {
+                drawLineOnMap(routePointsLatLng[i], routePointsLatLng[i + 1])
+                builder.include(routePointsLatLng[i])
             }
-            builder.include(routePointsLatLng.get(routePointsLatLng.lastIndex))
-            val bounds : LatLngBounds = builder.build()
+            builder.include(routePointsLatLng[routePointsLatLng.lastIndex])
+            val bounds: LatLngBounds = builder.build()
             val padding = 50
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
             mMap.setOnMapLoadedCallback(this)

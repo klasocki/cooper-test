@@ -10,21 +10,22 @@ import androidx.preference.PreferenceManager
 @SuppressLint("Registered")
 open class BaseThemedActivity : AppCompatActivity() {
     private var isSystemThemeDark = true
-    private var darkThemeOn = isSystemThemeDark
+    protected var isDarkThemeOn = isSystemThemeDark
     private lateinit var sharedPref: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        darkThemeOn = getThemeFromSettings()
-        setAppTheme(darkThemeOn)
+        isDarkThemeOn = getThemeFromSettings()
+        setAppTheme(isDarkThemeOn)
     }
 
     override fun onResume() {
         super.onResume()
         val newTheme = getThemeFromSettings()
-        if (newTheme != darkThemeOn) {
+        if (newTheme != isDarkThemeOn) {
             recreate()
-            darkThemeOn = newTheme
+            isDarkThemeOn = newTheme
         }
     }
 
