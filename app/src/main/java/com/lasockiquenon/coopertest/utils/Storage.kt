@@ -43,7 +43,7 @@ class Storage {
             builder.enableComplexMapKeySerialization()
             val sExposeGson = builder.create()
             val resultItems = sExposeGson.fromJson(jsonResults, Array<Results>::class.java)
-            results = ArrayList(Arrays.asList(*resultItems))
+            results = ArrayList(listOf(*resultItems))
         } else
             return null
         return results

@@ -9,8 +9,8 @@ import androidx.preference.PreferenceManager
 
 @SuppressLint("Registered")
 open class BaseThemedActivity : AppCompatActivity() {
-    private var isDefaultThemeDark = true
-    private var darkThemeOn = isDefaultThemeDark
+    private var isSystemThemeDark = true
+    private var darkThemeOn = isSystemThemeDark
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,11 +37,11 @@ open class BaseThemedActivity : AppCompatActivity() {
 
     private fun getThemeFromSettings(): Boolean {
         when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> isDefaultThemeDark = true
-            Configuration.UI_MODE_NIGHT_NO -> isDefaultThemeDark = false
+            Configuration.UI_MODE_NIGHT_YES -> isSystemThemeDark = true
+            Configuration.UI_MODE_NIGHT_NO -> isSystemThemeDark = false
         }
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        return sharedPref.getBoolean("dark_theme", isDefaultThemeDark)
+        return sharedPref.getBoolean("dark_theme", isSystemThemeDark)
     }
 }
