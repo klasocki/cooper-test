@@ -12,7 +12,7 @@
     <Button
         android:id="@+id/t"
         android:layout_width="0dp"
-        android:layout_height="103dp"
+        android:layout_height="0dp"
         android:background="?attr/primaryBackgroundColor"
         android:fontFamily="@font/aldrich"
         android:onClick="goToInfo"
@@ -25,12 +25,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_settings" />
+        app:layout_constraintTop_toBottomOf="@+id/button_settings"
+        app:layout_constraintHeight_percent="0.15"/>
 
     <Button
         android:id="@+id/buttonStart"
         android:layout_width="0dp"
-        android:layout_height="103dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.15"
         android:background="?attr/primaryBackgroundColor"
         android:fontFamily="@font/aldrich"
         android:onClick="startTest"
@@ -48,7 +50,8 @@
     <Button
         android:id="@+id/buttonResults"
         android:layout_width="0dp"
-        android:layout_height="103dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.15"
         android:background="?attr/primaryBackgroundColor"
         android:fontFamily="@font/aldrich"
         android:onClick="goToResults"
@@ -65,7 +68,8 @@
     <Button
         android:id="@+id/button_settings"
         android:layout_width="0dp"
-        android:layout_height="103dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.15"
         android:background="?attr/primaryBackgroundColor"
         android:fontFamily="@font/aldrich"
         android:onClick="goToSettings"
@@ -82,7 +86,8 @@
     <ImageView
         android:id="@+id/runningIcon"
         android:layout_width="0dp"
-        android:layout_height="285dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.4"
         android:contentDescription="@string/icon_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
