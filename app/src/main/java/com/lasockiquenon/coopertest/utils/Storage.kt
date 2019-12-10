@@ -22,12 +22,12 @@ class Storage {
 
         val builder = GsonBuilder()
         builder.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
-        //builder.excludeFieldsWithoutExposeAnnotation()
-        builder.enableComplexMapKeySerialization()
+        builder.excludeFieldsWithoutExposeAnnotation()
+        //builder.enableComplexMapKeySerialization()
         val sExposeGson = builder.create()
         val jsonResults = sExposeGson.toJson(results)
         editor.putString(RESULTS, jsonResults)
-        editor.commit()
+        editor.apply()
     }
 
     fun loadResults(context: Context): ArrayList<Results>? {
@@ -39,8 +39,8 @@ class Storage {
 
             val builder = GsonBuilder()
             builder.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
-            //builder.excludeFieldsWithoutExposeAnnotation()
-            builder.enableComplexMapKeySerialization()
+            builder.excludeFieldsWithoutExposeAnnotation()
+            //builder.enableComplexMapKeySerialization()
             val sExposeGson = builder.create()
             val resultItems = sExposeGson.fromJson(jsonResults, Array<Results>::class.java)
             results = ArrayList(Arrays.asList(*resultItems))
