@@ -1,7 +1,8 @@
+
 <resources>
     <string name="app_name">CooperTest</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_main">CooperTest</string>
+    <string name="title_activity_main">Cooper Test</string>
     <string name="start">Start</string>
     <string name="results">Results</string>
     <string name="profile">Profile</string>
@@ -10,14 +11,14 @@
     <string name="title_activity_settings">Settings</string>
     <string name="NameParameter">Your name</string>
     <string name="BirthdayParameter">Birthday</string>
-    <string name="AthleteParameter">Are you an athlete ?</string>
+    <string name="AthleteParameter">Are you an experienced athlete?</string>
     <string name="VeryBad">Very bad</string>
     <string name="Bad">Bad</string>
     <string name="Average">Average</string>
     <string name="Good">Good</string>
     <string name="VeryGood">Very good</string>
-    <string name="goToSettingsMessage">Set up settings if you want your complete result and record it</string>
-    <string name="acceptGoToSettings">Complete</string>
+    <string name="goToSettingsMessage">Set up settings before taking a test</string>
+    <string name="acceptGoToSettings">Set up</string>
     <string name="goBackToMenu">Later</string>
     <string name="date">Date</string>
     <string name="avg_speed">Avg Speed</string>
@@ -29,11 +30,11 @@
     <string name="go">Go!</string>
     <string name="ready">Ready…</string>
     <string name="icon_description">Application\'s icon - running man</string>
-    <string name="result">Result</string>
+    <string name="result">Result:</string>
     <string name="TitleLocation">Activate location</string>
-    <string name="TextLocation">You have to enable the location to perform a test</string>
+    <string name="TextLocation">You have to enable location to perform a test</string>
     <string name="ActivateLocation">Enable location</string>
-    <string name="ActivateGPSButton">Enable GPS on your phone</string>
+    <string name="ActivateGPSButton">Enable GPS</string>
     <string name="ConfirmExitMessage">Are you sure you want to exit?</string>
     <string name="ConfirmExitAccept">Yes</string>
     <string name="ConfirmExitRefuse">No</string>
@@ -72,9 +73,8 @@
         "&lt;p>Here is the table (from Wikipedia) for interpreting your results (brief description will be visible after you complete the test as well)&lt;/p>"
     </string>
     <string name="action_settings">Settings</string>
-    <string name="google_maps_key">AIzaSyD02cLvuYUNTgrSbwnn4UvO2go8gfFKq1Q</string>
     <string name="LabelDateResult">Date</string>
-    <string name="completeAllParameters">You have not complete all parameters, do you really want to return ?</string>
+    <string name="completeAllParameters">You have not completed the settings, do you really want to return ?</string>
     <string name="acceptCompleteParameters">Complete</string>
     <string name="returnToTheTest">Return</string>
 </resources>
