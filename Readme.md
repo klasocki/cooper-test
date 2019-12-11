@@ -1,5 +1,13 @@
 # Cooper Test GPS Android App
 
+## Screenshots
+
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/main-screen-light.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/main-screen-dark.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/ongoing-light.jpg"> |
+|<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/ongoing-dark.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/settings.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/result.jpg"> |
+|<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/confirmation.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/info.jpg"> |<img src="https://github.com/klasocki/cooper-test/blob/master/Screenshots/waiting-marker.jpg"> |
+
 ## What is the Cooper (12 minute run) Test?
 
 It is one of the most popular stamina tests for athletes and common people alike, and a great way to evaluate your fitness and compare it with your friends.
@@ -20,7 +28,6 @@ The aim of our application is to provide an easy, automatic way to perform the t
 * Automatic stamina evaluation - just start the test, run and listen to the sound notifications, and the result will be ready for you
 * You can safely put the device in your pocket - location will still be updated, and our app will keep showing on your lock screen if you'd like to take a quick look
 * See your route on the map as you run
-* Monitor your speed and see if you're on track to reach your target result, or beat your previous best
 * All the results are saved - track your fitness and routes you covered
 * Choose between dark and light theme for the app - also for maps!
 
@@ -28,10 +35,10 @@ The aim of our application is to provide an easy, automatic way to perform the t
 
 **Before the test**
 
-* Fill your data in settings, so that we can interpret your results"
 * Activate GPS on your device (+ mobile data if you can, for better accuracy and route display)
 * Find a clear, flat, not slippery path for running. The app should be used outdoors for maximum GPS accuracy
 * Make sure you warm up for at least 15 minutes, in order to avoid injuries and get the best possible result
+* Fill your data in settings, so that we can interpret your results (you can do it after running as well)
 
 You can run in circles, or come back the same way. For reasonable accuracy the length of the circle / one way path should be at least ~100m (yards). 
 
@@ -41,7 +48,7 @@ Note: Don't worry if you're testing our app at home and the location oscillates,
 
 ## Permissions
 
-We need your location to calculate the distance and show your route on the map. On some devices you might also need to give the permission for working as a foreground service, so that location is still updated when you lock the screen or minimize the app
+We need your location to calculate the distance and show your route on the map. On some devices you might also need to give the permission for working as a foreground service, so that location is still updated when you lock the screen or minimize the app. We also ask for some personal information like birth date, name, gender etc. for evaluating your results. We don't use them for anything else. If you're still worried, you can use a nickname and non-accurate birth date (correct month or just year would be enough, see the table for result interpretation inside the app)
 
 ## Credits
 * App icon: Icon made by Freepik from www.flaticon.com
