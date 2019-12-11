@@ -54,6 +54,8 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var routePointsLatLng: List<LatLng> = emptyList()
     var cameraUpdate: CameraUpdate? = null
 
+    private var backFromSettings: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
@@ -136,15 +138,11 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
             mMap.animateCamera(cameraUpdate)
 
-            val objectResult = Results(
-                currentDistanceMeters,
-                routePoints,
-                avgSpeed,
-                this
-            )
-            resultTextView.text = objectResult.getLevel()
-            rangeTextView.text = objectResult.getRange(this)
-            Storage().addResult(this, objectResult)
+            if (isParametersComplete()) {
+                printAndSaveResult()
+            } else {
+                completeParameters()
+            }
 
         }
 
@@ -333,4 +331,47 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         }
     }
 
+    private fun isParametersComplete(): Boolean {
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
+        return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
+                && mSharedPreference.contains("gender"))
+
+    }
+
+    private fun completeParameters() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setMessage(R.string.goToSettingsMessage)
+            .setCancelable(false)
+            .setPositiveButton(
+                R.string.acceptGoToSettings,
+                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    intent.putExtra("SendByTestActivity", true)
+                    startActivityForResult(intent, 1)
+                })
+            .setNegativeButton(R.string.goBackToMenu, null)
+            .show()
+
+    }
+
+    private fun printAndSaveResult(){
+        val objectResult = Results(
+            currentDistanceMeters,
+            routePoints,
+            avgSpeed,
+            this
+        )
+        resultTextView.text = objectResult.getLevel()
+        rangeTextView.text = objectResult.getRange(this)
+        Storage().addResult(this, objectResult)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode,resultCode,data)
+        if(requestCode==1) {
+            if (resultCode==1) {
+                printAndSaveResult()
+            }
+        }
+    }
 }
