@@ -7,78 +7,79 @@
     android:background="?attr/primaryBackgroundColor"
     tools:context=".ResultActivity">
 
-    <TableLayout
-        android:id="@+id/tableResults"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <TableRow
-            android:id="@+id/headerRow"
+        <TableLayout
+            android:id="@+id/tableResults"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="UselessParent">
-            <!-- first element of the row-->
-            <TextView
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                android:id="@+id/headerDate"
-                android:layout_width="wrap_content"
+
+            <TableRow
+                android:id="@+id/headerRow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/accentBackgroundColor"
-                android:padding="18dip"
-                android:text="@string/date"
-                android:textAlignment="center"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="15dp"
-                tools:ignore="SpUsage" />
+                tools:ignore="UselessParent">
+                <!-- first element of the row-->
+                <TextView
 
-            <TextView
+                    android:id="@+id/headerDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/accentBackgroundColor"
+                    android:padding="18dip"
+                    android:text="@string/date"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    tools:ignore="SpUsage" />
 
-                android:id="@+id/AvgSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/accentBackgroundColor"
-                android:padding="18dip"
-                android:text="@string/avg_speed"
-                android:textAlignment="center"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="15dp"
-                tools:ignore="SpUsage" />
+                <TextView
 
-            <TextView
+                    android:id="@+id/Meters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/accentBackgroundColor"
+                    android:padding="18dip"
+                    android:text="@string/distance"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    tools:ignore="SpUsage" />
 
-                android:id="@+id/Meters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/accentBackgroundColor"
-                android:padding="18dip"
-                android:text="@string/distance"
-                android:textAlignment="center"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="15dp"
-                tools:ignore="SpUsage" />
+                <TextView
 
-            <TextView
-
-                android:id="@+id/Result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/accentBackgroundColor"
-                android:padding="18dip"
-                android:text="@string/result"
-                android:textAlignment="center"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="15dp"
-                tools:ignore="SpUsage" />
+                    android:id="@+id/Result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/accentBackgroundColor"
+                    android:padding="18dip"
+                    android:text="@string/result"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    tools:ignore="SpUsage" />
 
 
-        </TableRow>
+            </TableRow>
 
-    </TableLayout>
+        </TableLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

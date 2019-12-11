@@ -9,6 +9,8 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.core.view.setPadding
+import com.google.android.material.tabs.TabLayout
 import com.lasockiquenon.coopertest.utils.Results
 import com.lasockiquenon.coopertest.utils.UnitsUtils
 import com.lasockiquenon.coopertest.utils.Storage
@@ -35,27 +37,27 @@ class ResultActivity : BaseThemedActivity() {
 
                 val newRow = TableRow(this)
                 val myPlaceInList= placeInList
+                val tableViewLayout = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f)
 
                 var textview = newTextView()
                 val stringDate = android.text.format.DateFormat.format("yyyy-MM-dd", i.getDate())
                 textview.text = stringDate
                 textview.gravity = Gravity.CENTER_HORIZONTAL
-                newRow.addView(textview)
-
-                textview = newTextView()
-                textview.text = unitsUtils.formatSpeed(i.getAvgSpeed().toFloat())
-                textview.gravity = Gravity.CENTER_HORIZONTAL
-                newRow.addView(textview)
+                textview.setPadding(18)
+                textview.textSize=18f
+                newRow.addView(textview, tableViewLayout)
 
                 textview = newTextView()
                 textview.text = unitsUtils.formatDistance(i.getMeters())
                 textview.gravity = Gravity.CENTER_HORIZONTAL
-                newRow.addView(textview)
+                textview.textSize=18f
+                newRow.addView(textview, tableViewLayout)
 
                 textview = newTextView()
                 textview.text = i.getLevel()
                 textview.gravity = Gravity.CENTER_HORIZONTAL
-                newRow.addView(textview)
+                textview.textSize=18f
+                newRow.addView(textview, tableViewLayout)
 
                 newRow.isClickable = true
                 newRow.setOnClickListener{
@@ -66,7 +68,7 @@ class ResultActivity : BaseThemedActivity() {
 
 
 
-                table.addView(newRow)
+                table.addView(newRow, TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f))
                 placeInList += 1
             }
         }
