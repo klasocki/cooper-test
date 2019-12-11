@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.content_info.*
 
 class InfoActivity : BaseThemedActivity() {

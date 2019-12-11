@@ -13,7 +13,7 @@ import com.lasockiquenon.coopertest.R;
 
 /**
  * A dialog preference that shown calendar in the dialog.
- *
+ * <p>
  * Saves a string value.
  */
 public class DatePreference extends DialogPreference {
@@ -72,7 +72,8 @@ public class DatePreference extends DialogPreference {
 
         private static SimpleSummaryProvider sSimpleSummaryProvider;
 
-        private SimpleSummaryProvider() {}
+        private SimpleSummaryProvider() {
+        }
 
         /**
          * Retrieve a singleton instance of this simple

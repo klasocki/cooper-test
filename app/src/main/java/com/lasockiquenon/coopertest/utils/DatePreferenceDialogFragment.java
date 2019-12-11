@@ -11,9 +11,6 @@ import java.util.Calendar;
 import androidx.preference.PreferenceDialogFragmentCompat;
 
 public class DatePreferenceDialogFragment extends PreferenceDialogFragmentCompat {
-
-
-
     private int mLastYear;
     private int mLastMonth;
     private int mLastDay;

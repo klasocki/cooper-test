@@ -20,9 +20,9 @@ class UnitsUtils(val context: Context) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val useImperial = sharedPreferences.getBoolean("use_imperial", false)
         return if (!useImperial) {
-            "%.1f km/h".format(speedMetersPerSecond * 3.6)
+            "%.1fkm/h".format(speedMetersPerSecond * 3.6)
         } else {
-            "%.1f mph".format(speedMetersPerSecond * 2.23694)
+            "%.1fmph".format(speedMetersPerSecond * 2.23694)
         }
     }
 

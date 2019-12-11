@@ -80,7 +80,7 @@ class LocationService : Service() {
     }
 
     inner class LocalBinder : Binder() {
-        fun getService() : LocationService {
+        fun getService(): LocationService {
             return this@LocationService
         }
     }
@@ -97,7 +97,11 @@ class LocationService : Service() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel =
-                NotificationChannel(CHANNEL_ID, getString(R.string.test_ongoing), NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.test_ongoing),
+                    NotificationManager.IMPORTANCE_LOW
+                )
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(serviceChannel)
         }

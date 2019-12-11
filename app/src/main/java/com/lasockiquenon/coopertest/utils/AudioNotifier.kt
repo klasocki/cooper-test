@@ -5,7 +5,8 @@ import android.media.MediaPlayer
 import com.lasockiquenon.coopertest.R
 
 class AudioNotifier(private val context: Context) {
-    private var mediaPlayer = MediaPlayer.create(context,
+    private var mediaPlayer = MediaPlayer.create(
+        context,
         R.raw.left_10
     )
 
@@ -21,7 +22,8 @@ class AudioNotifier(private val context: Context) {
         var fileToPlay = -1
         for (timeLeft in listOf(10, 15, 30, 60, 120, 240, 360, 480, 600)) {
             if (secondsUntilFinished in timeLeft - 1..timeLeft) {
-                fileToPlay = context.resources.getIdentifier("left_$timeLeft", "raw", context.packageName)
+                fileToPlay =
+                    context.resources.getIdentifier("left_$timeLeft", "raw", context.packageName)
             }
         }
         if (fileToPlay != -1) {

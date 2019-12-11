@@ -15,15 +15,15 @@ class Storage {
 
     fun storeResults(context: Context, results: List<Results>) {
         // used for store arrayList in json format
-        val settings: SharedPreferences
         val editor: Editor
-        settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val settings: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         editor = settings.edit()
 
         val builder = GsonBuilder()
         builder.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
         builder.excludeFieldsWithoutExposeAnnotation()
-        //builder.enableComplexMapKeySerialization()
+
         val sExposeGson = builder.create()
         val jsonResults = sExposeGson.toJson(results)
         editor.putString(RESULTS, jsonResults)
@@ -32,21 +32,20 @@ class Storage {
 
     fun loadResults(context: Context): ArrayList<Results>? {
         // used for retrieving arraylist from json formatted string
-        val results: ArrayList<Results>
-        val settings: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        if (settings.contains(RESULTS)) {
+        val settings: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return if (settings.contains(RESULTS)) {
             val jsonResults = settings.getString(RESULTS, null)
 
             val builder = GsonBuilder()
             builder.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
             builder.excludeFieldsWithoutExposeAnnotation()
-            //builder.enableComplexMapKeySerialization()
+
             val sExposeGson = builder.create()
             val resultItems = sExposeGson.fromJson(jsonResults, Array<Results>::class.java)
-            results = ArrayList(listOf(*resultItems))
+            ArrayList(listOf(*resultItems))
         } else
-            return null
-        return results
+            null
     }
 
     fun addResult(context: Context, myModel: Results) {
@@ -57,11 +56,4 @@ class Storage {
         storeResults(context, results)
     }
 
-    fun removeResult(context: Context, myModel: Results) {
-        val results = loadResults(context)
-        if (results != null) {
-            results.remove(myModel)
-            storeResults(context, results)
-        }
-    }
 }

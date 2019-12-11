@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -26,12 +25,12 @@ class LocationActivity : BaseThemedActivity() {
         }
     }
 
-    fun requestPermissions() {
+    private fun requestPermissions() {
         var perms = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
-        if (Build.VERSION.SDK_INT >= 29){
+        if (Build.VERSION.SDK_INT >= 29) {
             perms += Manifest.permission.ACCESS_BACKGROUND_LOCATION
         }
         ActivityCompat.requestPermissions(this, perms, PERMISSION_ID)

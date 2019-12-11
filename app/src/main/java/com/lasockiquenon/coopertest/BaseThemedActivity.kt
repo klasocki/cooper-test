@@ -30,10 +30,7 @@ open class BaseThemedActivity : AppCompatActivity() {
     }
 
     private fun setAppTheme(darkThemeOn: Boolean) {
-        if (darkThemeOn)
-            setTheme(R.style.DarkTheme)
-        else
-            setTheme(R.style.LightTheme)
+        setTheme(if (darkThemeOn) R.style.DarkTheme else R.style.LightTheme)
     }
 
     private fun getThemeFromSettings(): Boolean {

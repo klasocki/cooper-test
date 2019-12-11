@@ -9,7 +9,7 @@ import com.lasockiquenon.coopertest.utils.PrefsFragment as PreferenceFragmentCom
 
 class SettingsActivity : BaseThemedActivity() {
 
-    var comeFromTestActivity : Boolean = false
+    var cameFromTestActivity: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,7 @@ class SettingsActivity : BaseThemedActivity() {
             .replace(R.id.settings, SettingsFragment())
             .commit()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        comeFromTestActivity = intent.getBooleanExtra("SendByTestActivity", false)
+        cameFromTestActivity = intent.getBooleanExtra("SentByTestActivity", false)
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -39,38 +39,34 @@ class SettingsActivity : BaseThemedActivity() {
     }
 
     override fun onBackPressed() {
-        if (comeFromTestActivity){
-            if (isParametersComplete()) {
+        when {
+            !cameFromTestActivity -> super.onBackPressed()
+            cameFromTestActivity && !isSettingsComplete() -> confirmLeavingWithoutFinishing()
+            else -> {
                 val intent = Intent()
                 setResult(1, intent)
                 finish()
-            } else {
-                completeParameters()
             }
-        } else {
-            super.onBackPressed()
         }
     }
 
-    private fun isParametersComplete(): Boolean {
+    private fun isSettingsComplete(): Boolean {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
         return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
                 && mSharedPreference.contains("gender"))
-
     }
 
-    private fun completeParameters() {
+    private fun confirmLeavingWithoutFinishing() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setMessage(R.string.completeAllParameters)
             .setCancelable(false)
             .setPositiveButton(R.string.acceptCompleteParameters, null)
-            .setNegativeButton(R.string.returnToTheTest, DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
+            .setNegativeButton(R.string.returnToTheTest) { _: DialogInterface, _: Int ->
                 val intent = Intent()
-                setResult(0,intent)
+                setResult(0, intent)
                 finish()
-            })
+            }
             .show()
-
     }
 
 

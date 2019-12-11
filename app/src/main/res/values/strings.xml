@@ -3,6 +3,7 @@
     <string name="app_name">CooperTest</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">Cooper Test</string>
+    <string name="date_format">yyyy-MM-dd</string>
     <string name="start">Start</string>
     <string name="results">Results</string>
     <string name="profile">Profile</string>
@@ -21,7 +22,6 @@
     <string name="acceptGoToSettings">Set up</string>
     <string name="goBackToMenu">Later</string>
     <string name="date">Date</string>
-    <string name="avg_speed">Avg Speed</string>
     <string name="distance">Distance</string>
     <string name="settings">Settings</string>
     <string name="initial_speed">0.0</string>
@@ -58,10 +58,14 @@
         "No need for someone else to measure your distance and time - it's all there in your app!&lt;/p>"
 
         "&lt;p>&lt;big>&lt;b>Before performing the test:&lt;/b>&lt;/big>"
-        "&lt;ul>&lt;li>\tFill your data in settings, so that we can interpret your results.&lt;/li>"
+        "&lt;ul>"
         "&lt;li>\tActivate GPS on your device (+ mobile data if you can, for better accuracy and route display)&lt;/li>"
         "&lt;li>\tFind a clear, flat, not slippery path for running. The app should be used outdoors for maximum GPS accuracy.&lt;/li>"
-        "&lt;li>\tMake sure you warm up for at least 15 minutes, in order to avoid injuries and get the best possible result&lt;/li>&lt;/ul>"
+        "&lt;li>\tMake sure you warm up for at least 15 minutes, in order to avoid injuries and get the best possible result&lt;/li>"
+        "&lt;li>\tFill your data in settings, so that we can interpret your results. We do not use it for anything else."
+        " You can also complete it after the test, and the birth date does not have to be completely accurate "
+        "(month/year level is fine for good interpretation, see table below)&lt;/li>"
+        "&lt;/ul>""
         "You can run in circles, or come back the same way. For reasonable accuracy the length of the "
         "circle / one way path should be at least ~100m (yards)&lt;br/>&lt;br/>&lt;/p>"
 
@@ -74,7 +78,7 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="LabelDateResult">Date</string>
-    <string name="completeAllParameters">You have not completed the settings, do you really want to return ?</string>
+    <string name="completeAllParameters">You have not completed the settings, do you really want to return?</string>
     <string name="acceptCompleteParameters">Complete</string>
     <string name="returnToTheTest">Return</string>
 </resources>

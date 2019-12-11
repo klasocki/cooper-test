@@ -34,7 +34,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             setPreferenceSummary(preference);
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference,Object newValue) {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
                     //your code to change values.
                     setPreferenceSummary(preference);
                     return true;
@@ -50,7 +50,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         }
 
     }
-
 
 
     /**

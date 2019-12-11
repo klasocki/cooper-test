@@ -30,7 +30,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
 
     private lateinit var mMap: GoogleMap
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private lateinit var mMarker: Marker
+    private lateinit var currentLocationMarker: Marker
     private var isMapReady: Boolean = false
     private var testStarted: Boolean = false
 
@@ -40,7 +40,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var currentDistanceMeters = 0.0
     private var avgSpeed: Double = 0.0
 
-    private val testLengthMinutes = 1
+    private val testLengthMinutes = 12
 
     private lateinit var notifier: AudioNotifier
     private val unitsUtils = UnitsUtils(this)
@@ -54,21 +54,18 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var routePointsLatLng: List<LatLng> = emptyList()
     var cameraUpdate: CameraUpdate? = null
 
-    private var backFromSettings: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        printResultNumber = intent.getIntExtra("Results", -1)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        printResultNumber = intent.getIntExtra("Results", -1)
         if (printResultNumber != -1) {
             onlyShowingResultsNoTest = true
             printResult()
         } else {
-
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             notifier = AudioNotifier(this)
             testTimer = getTestTimer()
@@ -126,7 +123,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         stopService(intent)
         isServiceBound = false
 
-        mMarker.remove()
+        currentLocationMarker.remove()
         timerView.text = getString(R.string.result)
 
         if (completed && routePoints.count() > 0) {
@@ -139,7 +136,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
             mMap.animateCamera(cameraUpdate)
 
-            if (isParametersComplete()) {
+            if (isSettingsComplete()) {
                 printAndSaveResult()
             } else {
                 completeParameters()
@@ -159,10 +156,10 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         val latLng = LatLng(newLocation.latitude, newLocation.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
 
-        if (::mMarker.isInitialized)
-            mMarker.remove()
+        if (::currentLocationMarker.isInitialized)
+            currentLocationMarker.remove()
 
-        mMarker = mMap.addMarker(
+        currentLocationMarker = mMap.addMarker(
             MarkerOptions()
                 .position(latLng)
                 .alpha(.5.toFloat())
@@ -312,8 +309,10 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         timerView.textAlignment = View.TEXT_ALIGNMENT_CENTER
         currentDistanceTextView.text = unitsUtils.formatDistance(myResult.getMeters())
         labelCurrSpeed.text = getString(R.string.LabelDateResult)
-        currentSpeedView.text =
-            android.text.format.DateFormat.format("yyyy-MM-dd", myResult.getDate())
+        currentSpeedView.text = android.text.format.DateFormat.format(
+            getString(R.string.date_format),
+            myResult.getDate()
+        )
         avgSpeedView.text = unitsUtils.formatSpeed(myResult.getAvgSpeed().toFloat())
         resultTextView.text = myResult.getLevel()
         rangeTextView.text = myResult.getRange(this)
@@ -336,30 +335,26 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         }
     }
 
-    private fun isParametersComplete(): Boolean {
+    private fun isSettingsComplete(): Boolean {
         val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
         return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
                 && mSharedPreference.contains("gender"))
-
     }
 
     private fun completeParameters() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setMessage(R.string.goToSettingsMessage)
             .setCancelable(false)
-            .setPositiveButton(
-                R.string.acceptGoToSettings,
-                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                    val intent = Intent(this, SettingsActivity::class.java)
-                    intent.putExtra("SendByTestActivity", true)
-                    startActivityForResult(intent, 1)
-                })
+            .setPositiveButton(R.string.acceptGoToSettings) { _: DialogInterface, _: Int ->
+                val intent = Intent(this, SettingsActivity::class.java)
+                intent.putExtra("SentByTestActivity", true)
+                startActivityForResult(intent, 1)
+            }
             .setNegativeButton(R.string.goBackToMenu, null)
             .show()
-
     }
 
-    private fun printAndSaveResult(){
+    private fun printAndSaveResult() {
         val objectResult = Results(
             currentDistanceMeters,
             routePoints,
@@ -372,11 +367,9 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode,resultCode,data)
-        if(requestCode==1) {
-            if (resultCode==1) {
-                printAndSaveResult()
-            }
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == 1) {
+            printAndSaveResult()
         }
     }
 }

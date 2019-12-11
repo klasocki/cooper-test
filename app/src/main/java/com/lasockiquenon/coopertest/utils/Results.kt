@@ -31,7 +31,7 @@ class Results(
     private var routePoints: List<Location> = emptyList()
     private var routePointsLatLong: List<LatLng> = emptyList()
     @Expose
-    private var routePointsString : String = ""
+    private var routePointsString: String = ""
     @Expose
     private var date: Date = Date()
     @Expose
@@ -67,7 +67,7 @@ class Results(
         val dob = Calendar.getInstance()
         val today = Calendar.getInstance()
 
-        dob.setTime(date)
+        dob.time = date
 
         var age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
 
@@ -78,7 +78,77 @@ class Results(
         return age
     }
 
-    fun setResultTest() {
+
+    fun getLevel(): String {
+        return level
+    }
+
+    fun getRange(context: Context): String {
+        val range: String = when {
+            nextStep == 0 -> {
+                " ( >" + formatMeters(previousStep, context) + ")"
+            }
+            previousStep == 0 -> {
+                " ( <" + formatMeters(nextStep, context) + ")"
+            }
+            else -> {
+                " (" + formatMeters(nextStep, context) + "-" + formatMeters(nextStep, context) + ")"
+            }
+        }
+        return range
+    }
+
+    fun getMeters(): Double {
+        return meters
+    }
+
+    fun getDate(): Date {
+        return date
+    }
+
+    fun getAvgSpeed(): Double {
+        return avgSpeed
+    }
+
+    fun getRoutePointsLatLong(): List<LatLng> {
+        return routePointsLatLong
+    }
+
+    fun getName(): String {
+        return name
+    }
+
+    private fun formatMeters(meters: Int, context: Context): String {
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
+        val miles = mSharedPreference.getBoolean("miles", false)
+        return if (!miles) {
+            "%.0fm".format(meters.toFloat())
+        } else {
+            "%.0fyd".format(meters * 1.09361)
+        }
+    }
+
+    internal fun convertLocationAndString() {
+        if (routePointsString == "") {
+            for (points in routePoints) {
+                routePointsString += points.latitude.toString() + "/" + points.longitude.toString() + "!"
+            }
+        } else if (routePointsLatLong.isNullOrEmpty()) {
+            routePointsLatLong = emptyList()
+            val points = split(routePointsString, "!")
+            for (point in points) {
+                if (point.contains("/")) {
+                    val pointSplited = split(point, "/")
+                    routePointsLatLong = routePointsLatLong + LatLng(
+                        pointSplited[0].toDouble(),
+                        pointSplited[1].toDouble()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setResultTest() {
         if (athlete) {
             if (gender == "Male") {
                 when {
@@ -555,71 +625,4 @@ class Results(
 
         }
     }
-
-    fun getLevel(): String {
-        return level
-    }
-
-    fun getRange(context: Context) : String {
-        val range: String
-        if (nextStep == 0) {
-            range = " ( >" + formatMeters(previousStep,context) + ")"
-        } else if (previousStep == 0){
-            range = " ( <" + formatMeters(nextStep,context) + ")"
-        } else{
-            range = " ("+formatMeters(nextStep,context) + "-" + formatMeters(nextStep,context) + ")"
-        }
-        return range
-    }
-
-    fun getMeters(): Double {
-        return meters
-    }
-
-    fun getDate(): Date {
-        return date
-    }
-
-    fun getAvgSpeed(): Double {
-        return avgSpeed
-    }
-
-    fun getRoutePointsLatLong() : List<LatLng>{
-        return routePointsLatLong
-    }
-
-    fun getName() : String{
-        return name
-    }
-
-    private fun formatMeters(meters: Int, context:Context): String {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(context)
-        val miles = mSharedPreference.getBoolean("miles", false)
-        if (!miles) {
-            return "%.0fm".format(meters.toFloat())
-        } else {
-            return "%.0fyd".format(meters * 1.09361)
-        }
-    }
-
-    internal fun convertLocationAndString(){
-        if (routePointsString=="") {
-            for (points in routePoints) {
-                routePointsString += points.latitude.toString() + "/" + points.longitude.toString() + "!"
-            }
-        } else if (routePointsLatLong.isNullOrEmpty()) {
-            routePointsLatLong = emptyList()
-            val points = split(routePointsString, "!")
-            for (point in points) {
-                if (point.contains("/")) {
-                    val pointSplited = split(point, "/")
-                    routePointsLatLong = routePointsLatLong + LatLng(pointSplited[0].toDouble(), pointSplited[1].toDouble())
-                }
-            }
-        }
-    }
-
-
-
-
 }
