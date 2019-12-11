@@ -17,7 +17,6 @@ class MainActivity : BaseThemedActivity() {
     }
 
     fun startTest(v: View) = when {
-        !isParametersComplete() -> completeParameters()
         !(LocationHandler.checkPermissions(this) && LocationHandler.isLocationEnabled(this)) -> {
             val intent = Intent(this, LocationActivity::class.java)
             startActivity(intent)
@@ -48,27 +47,7 @@ class MainActivity : BaseThemedActivity() {
         startActivity(intent)
     }
 
-    private fun isParametersComplete(): Boolean {
-        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
-                && mSharedPreference.contains("gender"))
 
-    }
-
-    private fun completeParameters() {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.goToSettingsMessage)
-            .setCancelable(false)
-            .setPositiveButton(
-                R.string.acceptGoToSettings,
-                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                    val intent = Intent(this, SettingsActivity::class.java)
-                    startActivity(intent)
-                })
-            .setNegativeButton(R.string.goBackToMenu, null)
-            .show()
-
-    }
 
 
 }

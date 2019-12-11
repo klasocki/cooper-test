@@ -1,26 +1,25 @@
 package com.lasockiquenon.coopertest
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.location.Location
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
-import androidx.preference.PreferenceManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.lasockiquenon.coopertest.utils.AudioNotifier
 import com.lasockiquenon.coopertest.utils.Results
 import com.lasockiquenon.coopertest.utils.Storage
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.lasockiquenon.coopertest.utils.UnitsUtils
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
@@ -31,6 +30,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
 
     private lateinit var mMap: GoogleMap
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var mMarker: Marker
     private var isMapReady: Boolean = false
     private var testStarted: Boolean = false
 
@@ -53,6 +53,8 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var onlyShowingResultsNoTest: Boolean = false
     private var routePointsLatLng: List<LatLng> = emptyList()
     var cameraUpdate: CameraUpdate? = null
+
+    private var backFromSettings: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +126,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         stopService(intent)
         isServiceBound = false
 
+        mMarker.remove()
         timerView.text = getString(R.string.result)
 
         if (completed && routePoints.count() > 0) {
@@ -136,15 +139,11 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
             mMap.animateCamera(cameraUpdate)
 
-            val objectResult = Results(
-                currentDistanceMeters,
-                routePoints,
-                avgSpeed,
-                this
-            )
-            resultTextView.text = objectResult.getLevel()
-            rangeTextView.text = objectResult.getRange(this)
-            Storage().addResult(this, objectResult)
+            if (isParametersComplete()) {
+                printAndSaveResult()
+            } else {
+                completeParameters()
+            }
 
         }
 
@@ -157,15 +156,19 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     }
 
     private fun processNewLocation(newLocation: Location) {
-        mMap.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(newLocation.latitude, newLocation.longitude), 15.0f
-            )
+        val latLng = LatLng(newLocation.latitude, newLocation.longitude)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
+
+        if (::mMarker.isInitialized)
+            mMarker.remove()
+
+        mMarker = mMap.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .alpha(.5.toFloat())
         )
 
-        if (!testStarted) {
-            return
-        }
+        if (!testStarted) return
 
         currentSpeedView.text = when {
             newLocation.hasSpeed() -> unitsUtils.formatSpeed(newLocation.speed)
@@ -333,4 +336,47 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
         }
     }
 
+    private fun isParametersComplete(): Boolean {
+        val mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
+        return (mSharedPreference.contains("birthday") && mSharedPreference.contains("name")
+                && mSharedPreference.contains("gender"))
+
+    }
+
+    private fun completeParameters() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setMessage(R.string.goToSettingsMessage)
+            .setCancelable(false)
+            .setPositiveButton(
+                R.string.acceptGoToSettings,
+                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    intent.putExtra("SendByTestActivity", true)
+                    startActivityForResult(intent, 1)
+                })
+            .setNegativeButton(R.string.goBackToMenu, null)
+            .show()
+
+    }
+
+    private fun printAndSaveResult(){
+        val objectResult = Results(
+            currentDistanceMeters,
+            routePoints,
+            avgSpeed,
+            this
+        )
+        resultTextView.text = objectResult.getLevel()
+        rangeTextView.text = objectResult.getRange(this)
+        Storage().addResult(this, objectResult)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode,resultCode,data)
+        if(requestCode==1) {
+            if (resultCode==1) {
+                printAndSaveResult()
+            }
+        }
+    }
 }

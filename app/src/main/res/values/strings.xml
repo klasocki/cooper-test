@@ -1,3 +1,4 @@
+
 <resources>
     <string name="app_name">CooperTest</string>
     <string name="title_activity_maps">Map</string>
@@ -73,4 +74,7 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="LabelDateResult">Date</string>
+    <string name="completeAllParameters">You have not completed the settings, do you really want to return ?</string>
+    <string name="acceptCompleteParameters">Complete</string>
+    <string name="returnToTheTest">Return</string>
 </resources>
