@@ -40,6 +40,7 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
     private var routePoints: List<Location> = emptyList()
     private var currentDistanceMeters = 0.0
     private var avgSpeed: Double = 0.0
+    private var currentSpeed: Float = 0f
 
     private val testLengthMinutes = 12
 
@@ -170,16 +171,20 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
 
         if (!testStarted) return
 
-        currentSpeedView.text = when {
-            newLocation.hasSpeed() -> unitsUtils.formatSpeed(newLocation.speed)
-            routePoints.count() > 0 -> unitsUtils.formatSpeed(
+
+
+         currentSpeed = when {
+            newLocation.hasSpeed() -> newLocation.speed
+            routePoints.count() > 0 ->
                 unitsUtils.calculateSpeed(
                     routePoints.last(),
                     newLocation
                 )
-            )
-            else -> unitsUtils.formatSpeed(0.toFloat())
+
+            else -> 0.toFloat()
         }
+
+        currentSpeedView.text= unitsUtils.formatSpeed(currentSpeed)
 
         if (routePoints.count() > 0) {
             updateMapAndSpeed(newLocation)
@@ -210,16 +215,22 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
 
         val lastPoint = LatLng(routePoints.last().latitude, routePoints.last().longitude)
         val newPoint = LatLng(newLocation.latitude, newLocation.longitude)
-        drawLineOnMap(lastPoint, newPoint)
+        drawLineOnMap(lastPoint, newPoint, currentSpeed)
     }
 
-    private fun drawLineOnMap(firstPoint: LatLng, secondPoint: LatLng) {
+    private fun drawLineOnMap(firstPoint: LatLng, secondPoint: LatLng, curSpeed : Float = 0f ) {
+        val myColor = FloatArray(3)
+        myColor.set(0,(curSpeed*24.0).toFloat())
+        myColor.set(1, 100f)
+        myColor.set(2, 100f)
+
         val options = PolylineOptions()
-        options.color(Color.RED)
+        options.color(Color.HSVToColor(myColor))
         options.width(5f)
         options.add(firstPoint)
         options.add(secondPoint)
         mMap.addPolyline(options)
+
     }
 
     private fun getTestTimer(): CountDownTimer {
