@@ -18,7 +18,7 @@
     <string name="Average">Average</string>
     <string name="Good">Good</string>
     <string name="VeryGood">Very good</string>
-    <string name="goToSettingsMessage">Set up settings before taking a test</string>
+    <string name="goToSettingsMessage">Set up settings if you want your complete result and record it</string>
     <string name="acceptGoToSettings">Set up</string>
     <string name="goBackToMenu">Later</string>
     <string name="date">Date</string>
