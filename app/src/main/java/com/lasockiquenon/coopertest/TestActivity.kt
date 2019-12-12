@@ -24,6 +24,7 @@ import com.lasockiquenon.coopertest.utils.UnitsUtils
 import kotlinx.android.synthetic.main.activity_test.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 
 class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
@@ -163,6 +164,8 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             MarkerOptions()
                 .position(latLng)
                 .alpha(.5.toFloat())
+                .icon(BitmapDescriptorFactory
+                    .defaultMarker(findTheColor(newLocation)))
         )
 
         if (!testStarted) return
@@ -182,6 +185,19 @@ class TestActivity : BaseThemedActivity(), OnMapReadyCallback, GoogleMap.OnMapLo
             updateMapAndSpeed(newLocation)
         }
         routePoints = routePoints + newLocation
+    }
+
+    private fun findTheColor(location: Location): Float {
+        val accuracy = location.accuracy
+        var color : Float = 125f
+        if (accuracy<5){
+            color=120f
+        } else if (accuracy>125) {
+            color=0f
+        } else{
+            color= (accuracy-125f).absoluteValue
+        }
+        return color
     }
 
     private fun updateMapAndSpeed(newLocation: Location) {
